@@ -1,0 +1,1290 @@
+{
+  "version": 1,
+  "updated": "2026-11-23",
+  "notes": "Agent-loop backlog. Pick the first story whose status is 'pending', refined is true, and every depends_on is 'done'. Statuses: pending | in_progress | blocked | done. Epics with refined=false must be split into stories (roadmap refinement) before work starts. Human-readable view: docs/product/roadmap.md.",
+  "definition_of_done": [
+    "API endpoints covered by feature tests (Pest); OpenAPI contract in packages/api-contract updated",
+    "Web, admin and mobile UI built for every surface listed, with loading, empty, error and offline states",
+    "All user-facing strings go through i18n",
+    "Server-side authorisation on every new endpoint",
+    "harness/scripts/verify.sh passes (lint, typecheck, tests, build)",
+    "Every acceptance criterion and referenced BR/U/R/AT check passes",
+    "harness/progress.md and harness/session-handoff.md updated"
+  ],
+  "increments": [
+    {
+      "id": "I0",
+      "name": "Foundation",
+      "goal": "All apps boot locally and in CI; health check end to end"
+    },
+    {
+      "id": "I1",
+      "name": "MVP: Farmer sells, buyer buys",
+      "goal": "Farmer signs up, pays (sandbox), is verified, builds a storefront and shares it; a buyer opens the link, buys with pickup, and the farmer fulfils"
+    },
+    {
+      "id": "I2",
+      "name": "Delivery + trust",
+      "goal": "Verified transporters quote, get assigned and prove delivery; inspection, disputes and reviews"
+    },
+    {
+      "id": "I3",
+      "name": "Suppliers + B2B procurement",
+      "goal": "Supplier catalogue; business RFQ to matched quotes to order"
+    },
+    {
+      "id": "I4",
+      "name": "Group buying + rescue",
+      "goal": "Group order via shared link with per-member payment; fixed-price rescue produce"
+    },
+    {
+      "id": "I5",
+      "name": "Jobs, consultants, markets",
+      "goal": "Job posts and private worker matching; verified consultant directory; market directory"
+    },
+    {
+      "id": "I6",
+      "name": "Launch hardening",
+      "goal": "Production-ready launch (contract Phase 3)"
+    }
+  ],
+  "stories": [
+    {
+      "id": "I0-01",
+      "increment": "I0",
+      "epic": "Scaffolding",
+      "refined": true,
+      "status": "pending",
+      "title": "Scaffold Laravel API in apps/api",
+      "surfaces": [
+        "api"
+      ],
+      "acceptance": [
+        "Laravel app created in apps/api (remove .gitkeep first)",
+        "PostgreSQL connection and Redis queue configured from env",
+        "GET /v1/health returns 200 with app version and DB/queue status",
+        "Pest installed; a health feature test passes",
+        "Pint and Larastan configured"
+      ],
+      "refs": [
+        "PRD §4"
+      ],
+      "depends_on": [
+        "I0-05"
+      ]
+    },
+    {
+      "id": "I0-02",
+      "increment": "I0",
+      "epic": "Scaffolding",
+      "refined": true,
+      "status": "pending",
+      "title": "Scaffold Next.js public web in apps/web",
+      "surfaces": [
+        "web"
+      ],
+      "acceptance": [
+        "Next.js App Router, TypeScript strict, Tailwind",
+        "i18n routing set up with English default and locale files ready for yo, ig, ha",
+        "A /health page calls the API health endpoint and shows status",
+        "ESLint, typecheck and a unit-test runner configured"
+      ],
+      "refs": [
+        "PRD §4",
+        "F28"
+      ],
+      "depends_on": [
+        "I0-01"
+      ]
+    },
+    {
+      "id": "I0-03",
+      "increment": "I0",
+      "epic": "Scaffolding",
+      "refined": true,
+      "status": "pending",
+      "title": "Scaffold Next.js admin console in apps/admin",
+      "surfaces": [
+        "admin"
+      ],
+      "acceptance": [
+        "Separate Next.js app, TypeScript strict, Tailwind",
+        "Protected layout placeholder (auth arrives in I1-07)",
+        "Lint, typecheck and test runner configured"
+      ],
+      "refs": [
+        "F19"
+      ],
+      "depends_on": [
+        "I0-01"
+      ]
+    },
+    {
+      "id": "I0-04",
+      "increment": "I0",
+      "epic": "Scaffolding",
+      "refined": true,
+      "status": "pending",
+      "title": "Scaffold Expo app in apps/mobile",
+      "surfaces": [
+        "mobile"
+      ],
+      "acceptance": [
+        "Expo (managed) with Expo Router and TypeScript strict",
+        "i18n set up with English default",
+        "Deep-link scheme and universal/app link config placeholders for farmoga.com",
+        "Health screen calls the API",
+        "Lint, typecheck and Jest configured"
+      ],
+      "refs": [
+        "F18",
+        "F28"
+      ],
+      "depends_on": [
+        "I0-01"
+      ]
+    },
+    {
+      "id": "I0-05",
+      "increment": "I0",
+      "epic": "Local environment",
+      "refined": true,
+      "status": "pending",
+      "title": "Local services and developer commands",
+      "surfaces": [
+        "infra"
+      ],
+      "acceptance": [
+        "docker-compose.yml runs PostgreSQL, Redis, MinIO (S3) and Mailpit",
+        "Makefile targets: up, down, api, web, admin, mobile, test, verify",
+        ".env.example lists every variable with no secrets",
+        "docs/runbooks/local-setup.md explains first-time setup"
+      ],
+      "refs": [
+        "PRD §7"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "I0-06",
+      "increment": "I0",
+      "epic": "API contract",
+      "refined": true,
+      "status": "pending",
+      "title": "OpenAPI contract and generated TypeScript client",
+      "surfaces": [
+        "api",
+        "web",
+        "admin",
+        "mobile"
+      ],
+      "acceptance": [
+        "packages/api-contract/openapi.yaml describes /v1/health",
+        "packages/shared generates a typed client from the contract",
+        "web, admin and mobile use the shared client for the health call",
+        "CI fails when the contract and the generated client drift"
+      ],
+      "refs": [
+        "PRD §4"
+      ],
+      "depends_on": [
+        "I0-02",
+        "I0-03",
+        "I0-04"
+      ]
+    },
+    {
+      "id": "I0-07",
+      "increment": "I0",
+      "epic": "Design system",
+      "refined": true,
+      "status": "pending",
+      "title": "Design tokens shared by web, admin and mobile",
+      "surfaces": [
+        "web",
+        "admin",
+        "mobile"
+      ],
+      "acceptance": [
+        "packages/design-tokens/tokens.json holds colours, type scale, spacing and radii (green brand from the prototype)",
+        "Tokens consumed by Tailwind (web, admin) and the mobile theme",
+        "Contrast meets WCAG 2.1 AA"
+      ],
+      "refs": [
+        "PRD §7"
+      ],
+      "depends_on": [
+        "I0-02",
+        "I0-03",
+        "I0-04"
+      ]
+    },
+    {
+      "id": "I0-08",
+      "increment": "I0",
+      "epic": "Quality gates",
+      "refined": true,
+      "status": "pending",
+      "title": "CI workflows and verify script",
+      "surfaces": [
+        "infra"
+      ],
+      "acceptance": [
+        ".github/workflows run lint, typecheck, tests and build per app, plus the contract check",
+        "harness/scripts/verify.sh runs the same gates locally and exits non-zero on failure",
+        "CI is green on main"
+      ],
+      "refs": [
+        "PDF §A9"
+      ],
+      "depends_on": [
+        "I0-06"
+      ]
+    },
+    {
+      "id": "I0-09",
+      "increment": "I0",
+      "epic": "Harness",
+      "refined": true,
+      "status": "pending",
+      "title": "Agent harness and loop content",
+      "surfaces": [
+        "harness"
+      ],
+      "acceptance": [
+        "Root CLAUDE.md: stack, commands, rules, where to find the PRD and backlog",
+        "harness/loop.md: pick, implement, verify, record, handoff",
+        "harness/init.sh and scripts/next-feature.sh work",
+        ".claude/settings.json, hooks, agents, commands and skills filled in",
+        "harness/open-questions.md lists the PRD questions Q1-Q12"
+      ],
+      "refs": [
+        "PRD §11-12"
+      ],
+      "depends_on": [
+        "I0-08"
+      ]
+    },
+    {
+      "id": "I1-01",
+      "increment": "I1",
+      "epic": "Auth & accounts",
+      "refined": true,
+      "status": "pending",
+      "title": "Registration with phone/email OTP and consent",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Register with phone (primary) or email; OTP verifies the contact",
+        "Terms and privacy consent is required and stored (who, what, when, policy version); marketing opt-in is separate and optional",
+        "Rate limits on registration and OTP send/verify",
+        "OTP provider sits behind an interface with a log driver for local and test"
+      ],
+      "refs": [
+        "F02",
+        "BR-NOT-02"
+      ],
+      "depends_on": [
+        "I0-09"
+      ]
+    },
+    {
+      "id": "I1-02",
+      "increment": "I1",
+      "epic": "Auth & accounts",
+      "refined": true,
+      "status": "pending",
+      "title": "Login, sessions and role assignment",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Login and logout on web (cookie session) and mobile (token in secure storage)",
+        "A user can hold farmer and buyer roles; roles are checked server-side",
+        "Rate-limited login"
+      ],
+      "refs": [
+        "F02"
+      ],
+      "depends_on": [
+        "I1-01"
+      ]
+    },
+    {
+      "id": "I1-03",
+      "increment": "I1",
+      "epic": "Auth & accounts",
+      "refined": true,
+      "status": "pending",
+      "title": "Preserve deep-link destination through signup and login",
+      "surfaces": [
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Opening a protected action from /farm or /product returns the user to the same page and action after signup or login",
+        "Works on web and from a mobile deep link"
+      ],
+      "refs": [
+        "F18",
+        "BR-SHR-02",
+        "R12"
+      ],
+      "depends_on": [
+        "I1-02"
+      ]
+    },
+    {
+      "id": "I1-04",
+      "increment": "I1",
+      "epic": "Subscriptions",
+      "refined": true,
+      "status": "pending",
+      "title": "Plans endpoint and pricing UI",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "GET /v1/plans returns Quarterly ₦30,000 / 3 months, Half-yearly ₦54,000 / 6 months, Annual ₦95,000 / 12 months, with benefits",
+        "Pricing section on the landing page and in farmer onboarding"
+      ],
+      "refs": [
+        "F04",
+        "BR-SUB-02"
+      ],
+      "depends_on": [
+        "I1-02"
+      ]
+    },
+    {
+      "id": "I1-05",
+      "increment": "I1",
+      "epic": "Subscriptions",
+      "refined": true,
+      "status": "pending",
+      "title": "Subscription checkout and verified webhook activation",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Payment gateway behind an interface with a fake driver; the real sandbox driver is added once Q2 is answered",
+        "Checkout starts a payment; the success screen never activates anything",
+        "The webhook verifies signature, amount, currency, plan and owner; unique provider event IDs make replays no-ops",
+        "Entitlement activates only from the webhook"
+      ],
+      "refs": [
+        "F04",
+        "BR-PAY-01",
+        "BR-PAY-02",
+        "BR-PAY-03"
+      ],
+      "depends_on": [
+        "I1-04"
+      ]
+    },
+    {
+      "id": "I1-06",
+      "increment": "I1",
+      "epic": "Subscriptions",
+      "refined": true,
+      "status": "pending",
+      "title": "Entitlement ledger, calendar expiry and expired state",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Ledger keyed on paid_until; every change recorded (payment, renewal, refund, admin adjustment with reason)",
+        "Expiry uses calendar months, never fixed day counts",
+        "Early renewal starts at the current paid_until; after expiry the new term starts at payment time",
+        "A scheduled job moves subscriptions to expiring and expired; expired hides listings without deleting them",
+        "Renewal prompts show only for paid roles"
+      ],
+      "refs": [
+        "F04",
+        "BR-SUB-03",
+        "BR-SUB-04",
+        "BR-SUB-05",
+        "BR-SUB-06",
+        "BR-SUB-07",
+        "BR-SUB-08"
+      ],
+      "depends_on": [
+        "I1-05"
+      ]
+    },
+    {
+      "id": "I1-07",
+      "increment": "I1",
+      "epic": "Admin (minimum)",
+      "refined": true,
+      "status": "pending",
+      "title": "Admin login with MFA, RBAC sub-roles and audit log",
+      "surfaces": [
+        "api",
+        "admin"
+      ],
+      "acceptance": [
+        "Separate admin accounts with TOTP MFA",
+        "Sub-roles admin.super, admin.verification, admin.finance, admin.support enforced server-side",
+        "Audit events (actor, action, target, time, before/after) for every admin action",
+        "Admin can view users, subscriptions and payments"
+      ],
+      "refs": [
+        "F19"
+      ],
+      "depends_on": [
+        "I1-02"
+      ]
+    },
+    {
+      "id": "I1-08",
+      "increment": "I1",
+      "epic": "Admin (minimum)",
+      "refined": true,
+      "status": "pending",
+      "title": "Farmer verification submission and admin review queue",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [
+        "Farmer submits farm details and documents; files go to private encrypted storage",
+        "Reviewers open documents through short-lived signed URLs only",
+        "Approve, reject with reason, or request more info; the farmer is notified",
+        "Verified badge appears only when approved"
+      ],
+      "refs": [
+        "F03",
+        "BR-LST-03",
+        "BR-NOT-05"
+      ],
+      "depends_on": [
+        "I1-07"
+      ]
+    },
+    {
+      "id": "I1-09",
+      "increment": "I1",
+      "epic": "Storefront & listings",
+      "refined": true,
+      "status": "pending",
+      "title": "Farmer profile and storefront with five category tabs",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Profile: farm name, locality, bio, operating hours, cover image and logo",
+        "Unique slug, with suggestions on conflict",
+        "Five category tabs from business-type templates; renaming remaps listings",
+        "Storefront is public only when the entitlement is active and the farmer is verified"
+      ],
+      "refs": [
+        "F05",
+        "BR-LST-01",
+        "BR-LST-02",
+        "BR-LST-07"
+      ],
+      "depends_on": [
+        "I1-06",
+        "I1-08"
+      ]
+    },
+    {
+      "id": "I1-10",
+      "increment": "I1",
+      "epic": "Storefront & listings",
+      "refined": true,
+      "status": "pending",
+      "title": "Product listing create, edit and stock updates",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Fields: photos (compressed and resized), section, category, storefront tab, unit, price, quantity, pickup location, availability state and dates",
+        "Each stock or availability change records who and when; 'last confirmed' is shown",
+        "Unlimited listings; image upload failure is handled"
+      ],
+      "refs": [
+        "F05",
+        "BR-LST-04"
+      ],
+      "depends_on": [
+        "I1-09"
+      ]
+    },
+    {
+      "id": "I1-11",
+      "increment": "I1",
+      "epic": "Storefront & listings",
+      "refined": true,
+      "status": "pending",
+      "title": "Farmer dashboard with Share my storefront",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Summary cards: active listings, orders, subscription expiry",
+        "Quick actions: Add product, View orders, Share my storefront (copy link, WhatsApp, native share)",
+        "States: new account, incomplete verification, expired subscription"
+      ],
+      "refs": [
+        "F05",
+        "S02"
+      ],
+      "depends_on": [
+        "I1-10"
+      ]
+    },
+    {
+      "id": "I1-12",
+      "increment": "I1",
+      "epic": "Public & sharing",
+      "refined": true,
+      "status": "pending",
+      "title": "Landing page and role selection",
+      "surfaces": [
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Hero, value proposition, role cards (farmer, buyer for now), pricing, browse entry, footer",
+        "Loading skeleton, network failure and mobile menu states"
+      ],
+      "refs": [
+        "F01",
+        "S01"
+      ],
+      "depends_on": [
+        "I1-04"
+      ]
+    },
+    {
+      "id": "I1-13",
+      "increment": "I1",
+      "epic": "Public & sharing",
+      "refined": true,
+      "status": "pending",
+      "title": "Server-rendered /farm/{slug} and /product/{id} with share previews",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "SSR pages with canonical HTTPS URLs and Open Graph title, image and description",
+        "Copy link, WhatsApp prefilled text and native share (copy fallback on desktop)",
+        "Shows current price and stock; browsable without an account or app install",
+        "Mobile opens the same content from the link when the app is installed"
+      ],
+      "refs": [
+        "F18",
+        "BR-SHR-01",
+        "BR-SHR-02",
+        "U01",
+        "R01",
+        "AT01"
+      ],
+      "depends_on": [
+        "I1-10"
+      ]
+    },
+    {
+      "id": "I1-14",
+      "increment": "I1",
+      "epic": "Public & sharing",
+      "refined": true,
+      "status": "pending",
+      "title": "Unavailable and expired content page",
+      "surfaces": [
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Removed, expired, moderated or entitlement-expired content shows an informative page with alternatives",
+        "Never redirects to the generic homepage while the content exists"
+      ],
+      "refs": [
+        "F18",
+        "BR-SHR-03",
+        "U14",
+        "R10",
+        "AT09"
+      ],
+      "depends_on": [
+        "I1-13"
+      ]
+    },
+    {
+      "id": "I1-15",
+      "increment": "I1",
+      "epic": "Public & sharing",
+      "refined": true,
+      "status": "pending",
+      "title": "Marketplace browse and search",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Search by keyword with section, category and location filters",
+        "Cards show price per unit, quantity, location and last confirmed",
+        "Only public, entitled, verified listings appear; no-results state"
+      ],
+      "refs": [
+        "F07"
+      ],
+      "depends_on": [
+        "I1-10"
+      ]
+    },
+    {
+      "id": "I1-16",
+      "increment": "I1",
+      "epic": "Buying",
+      "refined": true,
+      "status": "pending",
+      "title": "Buy Now with atomic stock reservation",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Buyer chooses quantity and pickup; the order total shows product subtotal and fees",
+        "Stock is reserved atomically; concurrent checkouts cannot oversell (concurrency test)",
+        "Unpaid reservations expire and release stock",
+        "Price change during checkout makes the buyer re-confirm"
+      ],
+      "refs": [
+        "F08",
+        "BR-LST-06",
+        "BR-ORD-02",
+        "BR-ORD-03",
+        "U13",
+        "AT05"
+      ],
+      "depends_on": [
+        "I1-13",
+        "I1-03"
+      ]
+    },
+    {
+      "id": "I1-17",
+      "increment": "I1",
+      "epic": "Buying",
+      "refined": true,
+      "status": "pending",
+      "title": "Order payment and order state machine",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Order payment uses the gateway interface from I1-05; confirmation only via verified webhook",
+        "States created → payment_pending → confirmed → preparing → ready_for_pickup → delivered, plus cancelled and refunded; every transition audited",
+        "Refund webhook moves the order to refunded and releases stock where applicable"
+      ],
+      "refs": [
+        "F08",
+        "BR-ORD-01",
+        "BR-PAY-04"
+      ],
+      "depends_on": [
+        "I1-16"
+      ]
+    },
+    {
+      "id": "I1-18",
+      "increment": "I1",
+      "epic": "Buying",
+      "refined": true,
+      "status": "pending",
+      "title": "Farmer order management (pickup flow)",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Farmer sees incoming orders, confirms, marks preparing, ready for pickup, and handed over",
+        "Buyer confirms collection; order becomes delivered",
+        "Only the order's farmer and buyer can view it"
+      ],
+      "refs": [
+        "F08"
+      ],
+      "depends_on": [
+        "I1-17"
+      ]
+    },
+    {
+      "id": "I1-19",
+      "increment": "I1",
+      "epic": "Buying",
+      "refined": true,
+      "status": "pending",
+      "title": "In-app notifications for orders and subscription",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [
+        "Inbox with unread count; mark as read",
+        "Events: new order, order status change, verification decision, subscription activated, expiring, expired",
+        "Notifications are queued and sent after commit"
+      ],
+      "refs": [
+        "F16",
+        "BR-NOT-01"
+      ],
+      "depends_on": [
+        "I1-18"
+      ]
+    },
+    {
+      "id": "I1-20",
+      "increment": "I1",
+      "epic": "Buying",
+      "refined": true,
+      "status": "pending",
+      "title": "I1 end-to-end demo and mobile parity check",
+      "surfaces": [
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [
+        "Scripted demo on staging with seed data: farmer signup, pay, verify, storefront, share, buyer buys with pickup, farmer fulfils",
+        "Every I1 screen works on mobile and web",
+        "U01, U13, U14, R01, R10, R12, AT01, AT05 (stock), AT09 recorded as passing in docs/acceptance"
+      ],
+      "refs": [
+        "U01",
+        "U13",
+        "U14",
+        "R01",
+        "R10",
+        "R12",
+        "AT01",
+        "AT05",
+        "AT09"
+      ],
+      "depends_on": [
+        "I1-11",
+        "I1-12",
+        "I1-14",
+        "I1-15",
+        "I1-19"
+      ]
+    },
+    {
+      "id": "I2-E1",
+      "increment": "I2",
+      "epic": "Transport",
+      "refined": false,
+      "status": "pending",
+      "title": "Transporter onboarding, documents and admin verification",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F12",
+        "F03",
+        "BR-TRN-02"
+      ],
+      "depends_on": [
+        "I1-20"
+      ]
+    },
+    {
+      "id": "I2-E2",
+      "increment": "I2",
+      "epic": "Transport",
+      "refined": false,
+      "status": "pending",
+      "title": "Transport quote requests, bids, acceptance and assignment with capacity guard",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F12",
+        "BR-TRN-01",
+        "BR-TRN-03",
+        "BR-TRN-04",
+        "BR-ORD-07",
+        "U12"
+      ],
+      "depends_on": [
+        "I2-E1"
+      ]
+    },
+    {
+      "id": "I2-E3",
+      "increment": "I2",
+      "epic": "Transport",
+      "refined": false,
+      "status": "pending",
+      "title": "Delivery status timeline and proof of delivery",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F12",
+        "S10",
+        "BR-TRN-05",
+        "AT08"
+      ],
+      "depends_on": [
+        "I2-E2"
+      ]
+    },
+    {
+      "id": "I2-E4",
+      "increment": "I2",
+      "epic": "Trust",
+      "refined": false,
+      "status": "pending",
+      "title": "Delivery inspection and dispute cases",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F21",
+        "BR-ORD-08"
+      ],
+      "depends_on": [
+        "I2-E3"
+      ]
+    },
+    {
+      "id": "I2-E5",
+      "increment": "I2",
+      "epic": "Trust",
+      "refined": false,
+      "status": "pending",
+      "title": "Verified reviews, moderation and review appeals",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F20",
+        "BR-REV-01",
+        "BR-REV-02",
+        "BR-REV-03",
+        "BR-REV-04",
+        "BR-REV-05"
+      ],
+      "depends_on": [
+        "I2-E3"
+      ]
+    },
+    {
+      "id": "I3-E1",
+      "increment": "I3",
+      "epic": "Suppliers",
+      "refined": false,
+      "status": "pending",
+      "title": "Supplier onboarding, verification, storefront /supplier/{slug} and catalogue",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F06",
+        "F03",
+        "F18",
+        "S05",
+        "U02",
+        "R02"
+      ],
+      "depends_on": [
+        "I1-20"
+      ]
+    },
+    {
+      "id": "I3-E2",
+      "increment": "I3",
+      "epic": "Suppliers",
+      "refined": false,
+      "status": "pending",
+      "title": "Enquiry to supplier quote flow",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F06",
+        "BR-ORD-04"
+      ],
+      "depends_on": [
+        "I3-E1"
+      ]
+    },
+    {
+      "id": "I3-E3",
+      "increment": "I3",
+      "epic": "B2B procurement",
+      "refined": false,
+      "status": "pending",
+      "title": "Business buyer profile and RFQ publishing",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F09",
+        "S07",
+        "BR-ORD-05"
+      ],
+      "depends_on": [
+        "I3-E1"
+      ]
+    },
+    {
+      "id": "I3-E4",
+      "increment": "I3",
+      "epic": "B2B procurement",
+      "refined": false,
+      "status": "pending",
+      "title": "Matching engine and seller demand alerts",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F09",
+        "BR-ORD-06",
+        "BR-LST-05"
+      ],
+      "depends_on": [
+        "I3-E3"
+      ]
+    },
+    {
+      "id": "I3-E5",
+      "increment": "I3",
+      "epic": "B2B procurement",
+      "refined": false,
+      "status": "pending",
+      "title": "Quote responses, comparison and order creation",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F09",
+        "U11"
+      ],
+      "depends_on": [
+        "I3-E4"
+      ]
+    },
+    {
+      "id": "I4-E1",
+      "increment": "I4",
+      "epic": "Group buying",
+      "refined": false,
+      "status": "pending",
+      "title": "Create, share (/group/{id}) and join group orders; farmer approves pickup",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F10",
+        "F18",
+        "S08",
+        "BR-GRP-01",
+        "BR-GRP-02",
+        "U10",
+        "R11"
+      ],
+      "depends_on": [
+        "I1-20"
+      ]
+    },
+    {
+      "id": "I4-E2",
+      "increment": "I4",
+      "epic": "Group buying",
+      "refined": false,
+      "status": "pending",
+      "title": "Per-member payment, funding rules, cancellation and proportional refunds",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F10",
+        "BR-GRP-03",
+        "BR-GRP-04",
+        "BR-GRP-05",
+        "BR-PAY-07",
+        "AT08"
+      ],
+      "depends_on": [
+        "I4-E1"
+      ]
+    },
+    {
+      "id": "I4-E3",
+      "increment": "I4",
+      "epic": "Rescue produce",
+      "refined": false,
+      "status": "pending",
+      "title": "Rescue listings with condition disclosure and fixed-price checkout",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F11",
+        "S09",
+        "BR-RSC-01",
+        "BR-RSC-02",
+        "BR-RSC-03",
+        "U13"
+      ],
+      "depends_on": [
+        "I1-20"
+      ]
+    },
+    {
+      "id": "I5-E1",
+      "increment": "I5",
+      "epic": "Jobs",
+      "refined": false,
+      "status": "pending",
+      "title": "Job posts (/jobs/{id}) by paid employers, browse and apply",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F13",
+        "F18",
+        "S11",
+        "BR-JOB-01",
+        "BR-JOB-02",
+        "BR-JOB-04",
+        "BR-JOB-05"
+      ],
+      "depends_on": [
+        "I1-20"
+      ]
+    },
+    {
+      "id": "I5-E2",
+      "increment": "I5",
+      "epic": "Jobs",
+      "refined": false,
+      "status": "pending",
+      "title": "Private worker profiles and anonymous matching with contact approval",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F13",
+        "BR-JOB-03"
+      ],
+      "depends_on": [
+        "I5-E1"
+      ]
+    },
+    {
+      "id": "I5-E3",
+      "increment": "I5",
+      "epic": "Consultants",
+      "refined": false,
+      "status": "pending",
+      "title": "Consultant application, credential review and public directory",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F14",
+        "BR-JOB-06"
+      ],
+      "depends_on": [
+        "I1-20"
+      ]
+    },
+    {
+      "id": "I5-E4",
+      "increment": "I5",
+      "epic": "Markets",
+      "refined": false,
+      "status": "pending",
+      "title": "Market suggestions, moderation, reports and area alerts",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F15",
+        "S12",
+        "BR-MKT-01",
+        "BR-MKT-02",
+        "BR-MKT-03"
+      ],
+      "depends_on": [
+        "I1-20"
+      ]
+    },
+    {
+      "id": "I6-E1",
+      "increment": "I6",
+      "epic": "Integrations",
+      "refined": false,
+      "status": "pending",
+      "title": "Live payment gateway, SMS/OTP, email, push and opt-in WhatsApp",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile"
+      ],
+      "acceptance": [],
+      "refs": [
+        "F04",
+        "F16",
+        "BR-NOT-01",
+        "BR-PAY-05"
+      ],
+      "depends_on": [
+        "I5-E4"
+      ]
+    },
+    {
+      "id": "I6-E2",
+      "increment": "I6",
+      "epic": "Hardening",
+      "refined": false,
+      "status": "pending",
+      "title": "Security review, fraud tests and performance tests",
+      "surfaces": [
+        "api",
+        "web",
+        "mobile",
+        "admin"
+      ],
+      "acceptance": [],
+      "refs": [
+        "PRD §7"
+      ],
+      "depends_on": [
+        "I6-E1"
+      ]
+    },
+    {
+      "id": "I6-E3",
+      "increment": "I6",
+      "epic": "Operations",
+      "refined": false,
+      "status": "pending",
+      "title": "Production deploy, monitoring, backups and restore drill",
+      "surfaces": [
+        "infra"
+      ],
+      "acceptance": [],
+      "refs": [
+        "AT10",
+        "PDF §A9"
+      ],
+      "depends_on": [
+        "I6-E2"
+      ]
+    },
+    {
+      "id": "I6-E4",
+      "increment": "I6",
+      "epic": "Release",
+      "refined": false,
+      "status": "pending",
+      "title": "Android/iOS build readiness, full UAT run and handover package",
+      "surfaces": [
+        "mobile",
+        "infra"
+      ],
+      "acceptance": [],
+      "refs": [
+        "PRD §13"
+      ],
+      "depends_on": [
+        "I6-E3"
+      ]
+    }
+  ],
+  "out_of_scope": [
+    "Invite & Share module, referral codes and links, referral history, Membership Rewards and referral reward rules (PRD §14)"
+  ]
+}
