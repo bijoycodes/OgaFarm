@@ -1,9 +1,9 @@
 /* v1 · Admin console (minimum for the MVP): 2-step sign in, verification, users, payments, audit log */
 import { Icon } from '@shared/ui/Icon';
 import { useState } from 'react';
-import { Btn, Clickable, Status, Alert, Empty, Field, Kv, Chips, Badge } from '@shared/ui/ui';
+import { Btn, Clickable, Status, Alert, Empty, Field, Kv, Chips, Badge, TableWrap } from '@shared/ui/ui';
 import { AppShell, Logo } from '@shared/layout/shells';
-import { naira } from '@shared/data/sample';
+import { naira, IMG } from '@shared/data/sample';
 
 const QUEUE: [string, string, string, string, string][] = [
   ['Okafor Family Farm', 'Emeka Okafor', 'Farmer · Issele-Uku', '2 h ago', 'Pending review'],
@@ -66,12 +66,12 @@ export function AdminVerification({ state }: { state: string }) {
       <div className="row-between"><div><h1>Verification queue</h1><p className="muted">Oldest first. Aim to review within 1 working day.</p></div></div>
       <Chips items={['Pending (4)', 'More info needed (1)', 'Approved', 'Rejected']} />
       {state === 'empty' ? <Empty icon="shield" tone="ok" title="Queue is clear">No farms are waiting for review.</Empty> :
-        <div className="table-wrap"><table>
+        <TableWrap><table>
           <thead><tr><th>Farm</th><th>Owner</th><th>Type and place</th><th>Submitted</th><th>Status</th><th /></tr></thead>
           <tbody>{QUEUE.map(([farm, person, role, when, s]) => (
             <tr key={farm}><td><b>{farm}</b></td><td>{person}</td><td className="muted">{role}</td><td>{when}</td><td><Status s={s} /></td><td><Btn size="sm" variant="secondary" to="admin-review">Review</Btn></td></tr>
           ))}</tbody>
-        </table></div>}
+        </table></TableWrap>}
     </AppShell>
   );
 }
@@ -87,7 +87,7 @@ export function AdminReview({ state }: { state: string }) {
           <div className="card stack"><h3>Documents</h3>
             <div className="g2">
               <div className="stack" style={{ gap: 6 }}><div className="doc-preview"><Icon name="doc" /></div><div className="row-between small"><span>National ID (NIN slip)</span><Btn size="sm" variant="ghost" icon="eye" toast="Opens the document through a 10-minute private link">View</Btn></div></div>
-              <div className="stack" style={{ gap: 6 }}><div className="ph crop" style={{ aspectRatio: '3/2' }}><Icon name="image" /></div><div className="row-between small"><span>Farm photo</span><Btn size="sm" variant="ghost" icon="eye" toast="Opens the photo through a 10-minute private link">View</Btn></div></div>
+              <div className="stack" style={{ gap: 6 }}><div className="ph crop has-img" style={{ aspectRatio: '3/2' }}><img src={IMG('farm-cover')} alt="Farm photo submitted by Okafor Family Farm" /></div><div className="row-between small"><span>Farm photo</span><Btn size="sm" variant="ghost" icon="eye" toast="Opens the photo through a 10-minute private link">View</Btn></div></div>
             </div>
             <p className="xs muted row" style={{ gap: 6, flexWrap: 'nowrap' }}><Icon name="lock" />Documents open through short-lived private links. Viewing is recorded in the audit log.</p>
           </div>
@@ -129,12 +129,12 @@ export function AdminUsers() {
       <h1>Users</h1>
       <div className="input-group"><span><Icon name="search" /></span><input className="input" placeholder="Search by name, email or farm" aria-label="Search users" /></div>
       <Chips items={['All', 'Farmers', 'Buyers', 'Expired plans', 'Paused']} />
-      <div className="table-wrap"><table>
+      <TableWrap><table>
         <thead><tr><th>Name</th><th>Role</th><th>Plan</th><th>Verification</th><th>Account</th><th /></tr></thead>
         <tbody>{rows.map(([n, r, p, v, a]) => (
           <tr key={n}><td><b>{n}</b></td><td>{r}</td><td className="muted">{p}</td><td>{v === '—' ? <span className="muted">—</span> : <Status s={v === 'Verified' ? 'Approved' : 'Pending review'} />}</td><td><Status s={a} /></td><td><Btn size="sm" variant="ghost" toast={`${n}: profile, orders and audit history open`}>Open</Btn></td></tr>
         ))}</tbody>
-      </table></div>
+      </table></TableWrap>
     </AppShell>
   );
 }
@@ -155,12 +155,12 @@ export function AdminPayments() {
         <div className="card card-tight stat"><span className="si gold"><Icon name="alert" /></span><span className="l">Mismatches</span><span className="v">1</span><span className="xs muted">Plan not activated</span></div>
       </div>
       <Alert tone="info" icon="info">Plans and orders switch on only after the payment provider confirms the payment. The provider's record and ours are compared every day.</Alert>
-      <div className="table-wrap"><table>
+      <TableWrap><table>
         <thead><tr><th>Time</th><th>Reference</th><th>What</th><th className="num">Amount</th><th>Status</th><th>Daily check</th></tr></thead>
         <tbody>{rows.map(([t, ref, w, a, s, c]) => (
           <tr key={ref}><td>{t}</td><td><b>{ref}</b></td><td className="muted">{w}</td><td className="num">{naira(a)}</td><td><Status s={s} /></td><td>{c === 'Matched' ? <Badge tone="ok" icon="check">Matched</Badge> : <Badge tone="warn" icon="alert">{c}</Badge>}</td></tr>
         ))}</tbody>
-      </table></div>
+      </table></TableWrap>
     </AppShell>
   );
 }
@@ -176,10 +176,10 @@ export function AdminAudit() {
   return (
     <AppShell role="admin" active="admin-audit" title="Audit log">
       <div><h1>Audit log</h1><p className="muted">Every admin and system action. Entries cannot be edited or deleted.</p></div>
-      <div className="table-wrap"><table>
+      <TableWrap><table>
         <thead><tr><th>When</th><th>Who</th><th>Action</th><th>On</th></tr></thead>
         <tbody>{rows.map(([w, who, a, on]) => <tr key={w + a}><td className="num">{w}</td><td>{who}</td><td>{a}</td><td className="muted">{on}</td></tr>)}</tbody>
-      </table></div>
+      </table></TableWrap>
     </AppShell>
   );
 }

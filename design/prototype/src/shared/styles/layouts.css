@@ -113,7 +113,9 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
 .store-cover::before, .store-cover::after { content: ""; position: absolute; z-index: -1; border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%; }
 .store-cover::before { width: 360px; height: 360px; right: 6%; top: -190px; background: color-mix(in srgb, var(--leaf) 30%, transparent); }
 .store-cover::after { width: 220px; height: 220px; left: 30%; bottom: -150px; background: color-mix(in srgb, var(--harvest-fill) 32%, transparent); }
-.store-head { display: flex; gap: var(--s-4); align-items: end; margin-top: -52px; padding: 0 var(--s-5); flex-wrap: wrap; }
+.store-head { position: relative; z-index: 1; display: flex; gap: var(--s-4); align-items: end; margin-top: -52px; padding: 0 var(--s-5); flex-wrap: wrap; }
+/* Only the logo overlaps the cover; the name block starts just below the cover edge */
+.store-head > .grow { align-self: flex-start; padding-top: 60px; }
 .store-logo { width: 108px; height: 108px; border-radius: 16px; border: 4px solid var(--card); background: var(--harvest-fill); color: var(--on-harvest-fill); display: grid; place-items: center; font-family: var(--font-display); font-size: var(--fs-3xl); font-weight: 600; box-shadow: var(--shadow-2); flex: none; }
 .urlbar { display: flex; align-items: center; gap: 8px; background: var(--sunken); border-bottom: 1px solid var(--line); padding: 6px var(--s-5); font-size: var(--fs-xs); color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .urlbar .ic { width: 14px; height: 14px; }
@@ -164,7 +166,7 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
   .hero .wrap { grid-template-columns: 1fr; }
   .hero-card { display: none; }
   .role-grid, .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .split { grid-template-columns: 1fr; }
+  .split { grid-template-columns: minmax(0, 1fr); }
   .buy-box, .filter-panel { position: static; }
   .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -197,9 +199,13 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
   .browse { grid-template-columns: 1fr; }
   .filter-panel { display: none; }
   .filter-btn { display: inline-flex !important; }
-  .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .pgrid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .pcard .ph { aspect-ratio: 16 / 9; }
+  .pcard .ph::before { width: 46%; }
+  .pcard .ph .ic { width: 22%; height: 40%; }
   .pcard .price { font-size: var(--fs-lg); }
   .store-head { padding: 0 var(--s-4); margin-top: -44px; }
+  .store-head > .grow { padding-top: 0; flex-basis: 100%; }
   .store-logo { width: 88px; height: 88px; font-size: var(--fs-2xl); border-radius: 14px; }
   .store-cover { height: 130px; }
   .price-big { font-size: var(--fs-2xl); }
@@ -208,3 +214,59 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
   .tabs { width: 100%; }
 }
 @container app (min-width: 721px) { .show-m { display: none !important; } }
+/* Signed-in pages lose 256 px to the sidebar, so the two-column split stacks earlier there */
+@container app (max-width: 1100px) { .app .split { grid-template-columns: minmax(0, 1fr); } }
+/* Landing hero: real market photo with the WhatsApp share card overlapping it */
+.hero-visual { position: relative; justify-self: end; width: 100%; max-width: 540px; padding: 0 0 48px 48px; }
+.hero-photo { width: 100%; aspect-ratio: 5 / 6; object-fit: cover; object-position: 40% center; border-radius: var(--r-lg); box-shadow: var(--shadow-2); display: block; }
+.hero-visual .hero-card { position: absolute; left: 0; bottom: 0; width: 270px; max-width: 70%; padding: var(--s-3); gap: var(--s-2); }
+.hero-visual .hero-card .ph { display: none; }
+@container app (max-width: 900px) { .hero-visual { justify-self: stretch; max-width: none; padding: 0; } .hero-photo { aspect-ratio: 16 / 9; } }
+
+/* ── Mobile: action buttons fill the width ─────────────────────────────
+   On phones, main buttons (not small inline ones) stretch to the full width of
+   their area. Two buttons in a row share it; they wrap to separate lines if the
+   labels don't fit. Header, search, input and link-box buttons keep their size. */
+@container app (max-width: 720px) {
+  .row > .btn:not(.btn-sm), .row-between > .btn:not(.btn-sm) { flex: 1 1 0; min-width: max-content; }
+  .store-head > .row { flex-basis: 100%; }
+  /* Stat cards: two per row; a third one takes the full row */
+  .g3:has(> .stat) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g3:has(> .stat) > .stat:nth-child(3):last-child { grid-column: 1 / -1; }
+  /* List rows with an action: the action drops below the text and fills the width */
+  .list-row.wrap-m > .grow { min-width: 62%; }
+  .list-row.wrap-m > .btn { flex-basis: 100%; }
+  /* Long screen titles in the top bar stay on one line */
+  .topbar .title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1 1 auto; }
+  .checklist li { flex-wrap: nowrap; }
+  .table-wrap td, .table-wrap th { white-space: nowrap; }
+  .row-between > .row:has(> .btn:not(.btn-sm)) { flex-basis: 100%; }
+  .field > .select, .field > .input { width: 100% !important; }
+  /* Filter chips: one swipeable line instead of wrapping */
+  .chips:not(.field > .chips) { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: calc(-1 * var(--s-4)); padding-right: var(--s-4); }
+  .chips:not(.field > .chips)::-webkit-scrollbar { display: none; }
+  .chips .chip { flex: none; }
+  .btn:not(.btn-sm) { padding-left: 16px; padding-right: 16px; }
+  .stack > .btn:not(.btn-sm), .stack-lg > .btn:not(.btn-sm), .card > .btn:not(.btn-sm),
+  .empty > .btn:not(.btn-sm), form > .btn:not(.btn-sm) { align-self: stretch !important; width: 100%; }
+  .empty .row { align-self: stretch; }
+  .pub-actions .btn, .searchbar .btn, .input-group .btn, .linkbox .btn, .topbar .btn { flex: none; }
+  /* A heading row with a button: put the button on its own full-width line */
+  .row-between:has(> h1, > div > h1) > .btn:not(.btn-sm) { flex-basis: 100%; }
+}
+@container app (max-width: 720px) {
+  /* Marketplace toolbar: Filters and Sort share the full width at the same height */
+  .browse-tools { width: 100%; flex-wrap: nowrap; }
+  .browse-tools > .btn, .browse-tools > .select { flex: 1 1 0; min-height: 44px !important; width: auto !important; }
+  /* Small photo strips stay as thumbnails instead of one huge photo per line */
+  .g3.thumb-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .g3.thumb-strip .ph { aspect-ratio: 1; }
+  /* Decorative blobs get cut into hard-edged shapes on narrow screens */
+  .hero::after, .cta-band::before, .cta-band::after, .auth::before, .auth::after { display: none; }
+  .role-card { padding: var(--s-4); gap: 6px; }
+  .hero-trust { gap: 10px 16px; font-size: var(--fs-xs); }
+}
+/* Screens whose side panel holds the main action (order tracking, driver job, handover): show it first on phones */
+@container app (max-width: 900px) { .split.aside-first-m > aside { order: -1; } }
+/* Breadcrumb links: 44 px tall tap area without changing the visual size */
+.breadcrumb button { padding: 10px 4px; margin: -10px -4px; }

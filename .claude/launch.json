@@ -4,8 +4,24 @@
     {
       "name": "prototype",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "design/prototype", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "design/prototype",
+        "run",
+        "dev"
+      ],
       "port": 5173
+    },
+    {
+      "name": "prototype-staging",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "design/prototype-staging",
+        "run",
+        "dev"
+      ],
+      "port": 5174
     }
   ]
 }

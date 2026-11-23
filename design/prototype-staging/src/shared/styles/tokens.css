@@ -1,0 +1,88 @@
+/* OgaFarm design tokens. Generated with the UI/UX Pro Max skill ("Organic Biophilic" style,
+   Agriculture palette: earth green + harvest gold), then softened for a calmer feel.
+   Layout concept: mobile-first marketplace, rounded organic surfaces, natural soft shadows. */
+:root {
+  /* brand */
+  --primary: #2D7A4E;          /* softened from #15803D · white text 5.3:1 */
+  --primary-hover: #25683F;
+  --primary-ink: #22603D;      /* brand-coloured text on light surfaces · 7:1 */
+  --primary-soft: #E5F2E9;
+  --on-primary: #FFFFFF;
+  --leaf: #7CC08F;             /* decorative green, never for text */
+  --harvest: #A16207;          /* accent from the skill palette · text-safe on light */
+  --harvest-soft: #FCF1DA;
+  --harvest-fill: #E9BE6B;     /* soft gold fill for highlights */
+  --on-harvest-fill: #3F2B04;
+
+  /* surfaces and text */
+  --bg: #F5FAF6;               /* softened from #F0FDF4 */
+  --card: #FFFFFF;
+  --sunken: #EEF5F0;
+  --band: #E4F1E8;
+  --band-2: #F8EEDB;
+  --ink: #173D2A;              /* softened from #14532D · 12:1 */
+  --ink-2: #345644;
+  --muted: #536A5D;            /* 5.6:1 on --bg */
+  --line: #DCEADF;
+  --line-strong: #C3D8C9;
+  --frame: #1F2E25;
+  --overlay: rgba(18, 38, 27, .42);
+
+  /* semantic: soft fill, readable text (each pair ≥ 4.5:1) */
+  --ok: #23703F;     --ok-bg: #E4F3E8;
+  --warn: #8A5509;   --warn-bg: #FCF1DA;
+  --danger: #B42318; --danger-bg: #FCEBE8;
+  --info: #285F92;   --info-bg: #E7F0F8;
+
+  /* photo tile tints */
+  --tint-crop: #E2F0DE;
+  --tint-animal: #FAEEDB;
+  --tint-bulk: #F1EADD;
+  --tint-fish: #DFEEF1;
+
+  /* type: Lora headings (skill pick) + Nunito Sans body (skill "Soft Rounded" body, lining figures for prices) */
+  --font-display: "Lora", Georgia, "Times New Roman", serif;
+  --font-body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fs-xs: .75rem; --fs-sm: .875rem; --fs-md: 1rem; --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem; --fs-2xl: 1.75rem; --fs-3xl: 2.25rem; --fs-4xl: 3rem;
+
+  /* shape, space, elevation, motion */
+  --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-ctl: 8px; /* buttons, inputs, chips, tabs, nav links */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --shadow-1: 0 1px 2px rgba(23, 61, 42, .05), 0 2px 8px rgba(23, 61, 42, .04);
+  --shadow-2: 0 12px 32px -8px rgba(23, 61, 42, .16);
+  --shadow-3: 0 24px 48px -12px rgba(23, 61, 42, .22);
+  --ease-out: cubic-bezier(.22, .8, .36, 1);
+  --dur-fast: 150ms; --dur: 220ms; --dur-slow: 320ms;
+  --icon-sm: 16px; --icon-md: 20px; --icon-lg: 24px;
+  --tap: 44px;
+  --z-sticky: 10; --z-bar: 20; --z-overlay: 40; --z-toast: 50;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --primary: #7FC79A; --primary-hover: #97D4AD; --primary-ink: #97D4AD; --primary-soft: #1D3528; --on-primary: #0C1F14;
+    --leaf: #5FA574; --harvest: #E8BE6E; --harvest-soft: #33291A; --harvest-fill: #D9AE5C; --on-harvest-fill: #2A1C03;
+    --bg: #101A14; --card: #172420; --sunken: #13201A; --band: #1B2E23; --band-2: #2A2519;
+    --ink: #E3EEE6; --ink-2: #C3D6C9; --muted: #9DB3A5; --line: #26382D; --line-strong: #34493B;
+    --frame: #08100B; --overlay: rgba(0, 0, 0, .58);
+    --ok: #8BD3A5; --ok-bg: #1A3324; --warn: #EBC27A; --warn-bg: #33291A;
+    --danger: #F4A397; --danger-bg: #3B1F1B; --info: #9CC5EE; --info-bg: #172A3B;
+    --tint-crop: #1E3223; --tint-animal: #332A1B; --tint-bulk: #2C281F; --tint-fish: #183034;
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .3); --shadow-2: 0 12px 32px -8px rgba(0, 0, 0, .55); --shadow-3: 0 24px 48px -12px rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] {
+  --primary: #7FC79A; --primary-hover: #97D4AD; --primary-ink: #97D4AD; --primary-soft: #1D3528; --on-primary: #0C1F14;
+  --leaf: #5FA574; --harvest: #E8BE6E; --harvest-soft: #33291A; --harvest-fill: #D9AE5C; --on-harvest-fill: #2A1C03;
+  --bg: #101A14; --card: #172420; --sunken: #13201A; --band: #1B2E23; --band-2: #2A2519;
+  --ink: #E3EEE6; --ink-2: #C3D6C9; --muted: #9DB3A5; --line: #26382D; --line-strong: #34493B;
+  --frame: #08100B; --overlay: rgba(0, 0, 0, .58);
+  --ok: #8BD3A5; --ok-bg: #1A3324; --warn: #EBC27A; --warn-bg: #33291A;
+  --danger: #F4A397; --danger-bg: #3B1F1B; --info: #9CC5EE; --info-bg: #172A3B;
+  --tint-crop: #1E3223; --tint-animal: #332A1B; --tint-bulk: #2C281F; --tint-fish: #183034;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .3); --shadow-2: 0 12px 32px -8px rgba(0, 0, 0, .55); --shadow-3: 0 24px 48px -12px rgba(0, 0, 0, .6);
+  color-scheme: dark;
+}

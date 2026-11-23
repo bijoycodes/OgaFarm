@@ -8,10 +8,14 @@ export interface Farm {
 export interface Product {
   id: string; name: string; farm: keyof typeof FARMS; kind: Kind; icon: string; price: number; unit: string;
   qty: string; min: number; cat: string; tab: string; status: string; confirmed: string; stale?: boolean;
+  img?: string;               // sample photo in public/images (see CREDITS.md)
 }
 export interface Order {
   id: string; buyer: string; buyerType: string; item: string; qty: string; total: number; status: string; when: string; code: string;
 }
+
+/** Sample photos live in public/images. Relative paths work in dev, the build and the shared artifact. */
+export const IMG = (name: string) => `./images/${name}.jpg`;
 
 export const FARMS = {
   okafor: { slug: 'okafor-family-farm', name: 'Okafor Family Farm', owner: 'Emeka Okafor', initials: 'OF', place: 'Issele-Uku, Delta State', verified: true, rating: 4.8, reviews: 23, since: 'March 2026', hours: 'Mon–Sat · 7:00 am – 5:00 pm', type: 'Mixed farm' },
@@ -21,14 +25,14 @@ export const FARMS = {
 } satisfies Record<string, Farm>;
 
 export const PRODUCTS: Product[] = [
-  { id: 'p1', name: 'Fresh tomatoes (Roma)', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 350, unit: 'kg', qty: '2,000 kg', min: 20, cat: 'Vegetables', tab: 'Vegetables', status: 'Available now', confirmed: 'Today, 9:20 am' },
-  { id: 'p2', name: 'Layer eggs', farm: 'deltapoultry', kind: 'animal', icon: 'egg', price: 5200, unit: 'crate', qty: '120 crates', min: 2, cat: 'Eggs', tab: 'Livestock & Poultry', status: 'Recurring supply', confirmed: 'Yesterday' },
-  { id: 'p3', name: 'Yellow garri', farm: 'asabagrain', kind: 'bulk', icon: 'sack', price: 42000, unit: '50 kg bag', qty: '80 bags', min: 1, cat: 'Processed & Packaged Foods', tab: 'Processed & Dried', status: 'Available now', confirmed: '2 days ago' },
-  { id: 'p4', name: 'Live catfish', farm: 'ughellifish', kind: 'fish', icon: 'fish', price: 2800, unit: 'kg', qty: '600 kg', min: 5, cat: 'Fish & Aquaculture', tab: 'Livestock & Poultry', status: 'Available now', confirmed: 'Today, 7:45 am' },
-  { id: 'p5', name: 'Sweet peppers (tatashe)', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 1800, unit: 'Derica', qty: '300 Derica', min: 5, cat: 'Vegetables', tab: 'Vegetables', status: 'Available now', confirmed: 'Today, 9:20 am' },
-  { id: 'p6', name: 'Ripe plantain', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 4500, unit: 'bunch', qty: '90 bunches', min: 1, cat: 'Fruits', tab: 'Fruits', status: 'Expected soon', confirmed: '3 days ago' },
-  { id: 'p7', name: 'Yellow maize', farm: 'okafor', kind: 'bulk', icon: 'seed', price: 38000, unit: '100 kg bag', qty: '25 bags', min: 1, cat: 'Grains & Cereals', tab: 'Grains & Cereals', status: 'Seasonal', confirmed: '6 days ago', stale: true },
-  { id: 'p8', name: 'Ugu (pumpkin leaves)', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 600, unit: 'bunch', qty: '150 bunches', min: 10, cat: 'Vegetables', tab: 'Vegetables', status: 'Available now', confirmed: 'Today, 9:20 am' }
+  { id: 'p1', name: 'Fresh tomatoes (Roma)', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 350, unit: 'kg', qty: '2,000 kg', min: 20, cat: 'Vegetables', tab: 'Vegetables', status: 'Available now', confirmed: 'Today, 9:20 am', img: IMG('tomatoes') },
+  { id: 'p2', name: 'Layer eggs', farm: 'deltapoultry', kind: 'animal', icon: 'egg', price: 5200, unit: 'crate', qty: '120 crates', min: 2, cat: 'Eggs', tab: 'Livestock & Poultry', status: 'Recurring supply', confirmed: 'Yesterday', img: IMG('eggs') },
+  { id: 'p3', name: 'Yellow garri', farm: 'asabagrain', kind: 'bulk', icon: 'sack', price: 42000, unit: '50 kg bag', qty: '80 bags', min: 1, cat: 'Processed & Packaged Foods', tab: 'Processed & Dried', status: 'Available now', confirmed: '2 days ago', img: IMG('garri') },
+  { id: 'p4', name: 'Live catfish', farm: 'ughellifish', kind: 'fish', icon: 'fish', price: 2800, unit: 'kg', qty: '600 kg', min: 5, cat: 'Fish & Aquaculture', tab: 'Livestock & Poultry', status: 'Available now', confirmed: 'Today, 7:45 am', img: IMG('catfish') },
+  { id: 'p5', name: 'Sweet peppers (tatashe)', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 1800, unit: 'Derica', qty: '300 Derica', min: 5, cat: 'Vegetables', tab: 'Vegetables', status: 'Available now', confirmed: 'Today, 9:20 am', img: IMG('peppers') },
+  { id: 'p6', name: 'Ripe plantain', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 4500, unit: 'bunch', qty: '90 bunches', min: 1, cat: 'Fruits', tab: 'Fruits', status: 'Expected soon', confirmed: '3 days ago', img: IMG('plantain') },
+  { id: 'p7', name: 'Yellow maize', farm: 'okafor', kind: 'bulk', icon: 'seed', price: 38000, unit: '100 kg bag', qty: '25 bags', min: 1, cat: 'Grains & Cereals', tab: 'Grains & Cereals', status: 'Seasonal', confirmed: '6 days ago', stale: true, img: IMG('maize') },
+  { id: 'p8', name: 'Ugu (pumpkin leaves)', farm: 'okafor', kind: 'crop', icon: 'leaf', price: 600, unit: 'bunch', qty: '150 bunches', min: 10, cat: 'Vegetables', tab: 'Vegetables', status: 'Available now', confirmed: 'Today, 9:20 am', img: IMG('ugu') }
 ];
 
 export const ORDERS: Order[] = [

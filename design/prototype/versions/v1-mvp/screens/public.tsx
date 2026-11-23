@@ -1,9 +1,10 @@
 /* v1 · Public pages for visitors */
 import { Icon } from '@shared/ui/Icon';
+import { useProto } from '@app/context';
 import { Btn, Clickable, ProductCard, Photo, Status, Verified, Alert, Empty, Stepper, Tabs, Kv, Skel, Badge } from '@shared/ui/ui';
 import { PublicShell } from '@shared/layout/shells';
 import { Plans, Browse } from '@shared/blocks';
-import { FARMS, PRODUCTS, naira } from '@shared/data/sample';
+import { FARMS, PRODUCTS, naira, IMG } from '@shared/data/sample';
 
 const ROLES: [string, string, string, string, string][] = [
   ['leaf', 'Farmer', 'Sell produce, livestock and eggs from your own storefront.', 'Paid plan', 'signup'],
@@ -11,7 +12,7 @@ const ROLES: [string, string, string, string, string][] = [
   ['store', 'Business buyer', 'Source in volume for your restaurant, shop or factory.', 'Free', 'soon:v3'],
   ['users', 'Group buyer', 'Buy together with others and share pickup or delivery.', 'Free', 'soon:v4'],
   ['seed', 'Farm supplier', 'Sell seed, feed, fertiliser, chicks and equipment.', 'Paid plan', 'soon:v3'],
-  ['truck', 'Transporter', 'Offer your vehicle and earn from farm deliveries.', 'Free', 'soon:v2']
+  ['truck', 'Transporter', 'Offer your vehicle and earn from farm deliveries.', 'Free', 'soon:v2:transporter-signup']
 ];
 
 const FEATURES: [string, string, string][] = [
@@ -22,6 +23,9 @@ const FEATURES: [string, string, string][] = [
 ];
 
 export function Landing() {
+  const { version } = useProto();
+  // "soon:v2:screen" links are live once the viewed version reaches v2
+  const isSoon = (to: string) => { const [k, v, target] = to.split(':'); return k === 'soon' && !(target && Number(v.slice(1)) <= Number(version.slice(1))); };
   return (
     <PublicShell active="landing">
       <section className="hero">
@@ -38,11 +42,14 @@ export function Landing() {
             </form>
             <div className="hero-trust"><span><Icon name="shield" />Verified farms</span><span><Icon name="tag" />Farmer-set prices</span><span><Icon name="lock" />Secure payment</span></div>
           </div>
+          <div className="hero-visual">
+          <img className="hero-photo" src={IMG('market-hero')} alt="Buyers choosing fresh tomatoes at a Nigerian market" />
           <div className="hero-card" aria-hidden="true">
             <div className="row"><span className="avatar">EO</span><div><b>Okafor Family Farm</b><div className="xs muted">shared on WhatsApp</div></div></div>
             <div className="chat">Fresh Roma tomatoes harvested this morning. ₦350/kg, pickup in Issele-Uku. Order here.</div>
             <Photo p={PRODUCTS[0]} />
             <div className="row-between"><b className="num" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-xl)', color: 'var(--primary-ink)' }}>₦350 / kg</b><Badge tone="ok" icon="check">2,000 kg in stock</Badge></div>
+          </div>
           </div>
         </div>
       </section>
@@ -65,7 +72,7 @@ export function Landing() {
                 <div className="row-between"><span className="ri"><Icon name={i} /></span><Badge tone={p === 'Free' ? 'ok' : 'wheat'}>{p}</Badge></div>
                 <b style={{ fontSize: 'var(--fs-lg)' }}>{t}</b>
                 <p className="small muted">{d}</p>
-                <span className="go">{to.startsWith('soon') ? 'Coming soon' : 'Get started'}<Icon name="chev" /></span>
+                <span className="go">{isSoon(to) ? 'Coming soon' : 'Get started'}<Icon name="chev" /></span>
               </Clickable>
             ))}
           </div>
@@ -93,7 +100,7 @@ export function Landing() {
           </div>
           <div className="card stack" style={{ background: 'var(--sunken)', boxShadow: 'none' }}>
             <div className="linkbox"><code>farmoga.com/farm/okafor-family-farm</code><Badge tone="ok" icon="check">Live</Badge></div>
-            <div className="g3">{[PRODUCTS[0], PRODUCTS[5], PRODUCTS[6]].map(p => <Photo key={p.id} p={p} />)}</div>
+            <div className="g3 thumb-strip">{[PRODUCTS[0], PRODUCTS[5], PRODUCTS[6]].map(p => <Photo key={p.id} p={p} />)}</div>
             <p className="small muted">Buyers open your page in any browser. No app download needed.</p>
           </div>
         </div>
@@ -141,7 +148,7 @@ export function FarmStorefront({ state }: { state: string }) {
   const mine = PRODUCTS.filter(p => p.farm === 'okafor');
   return (
     <PublicShell url="/farm/okafor-family-farm">
-      <div className="store-cover" role="img" aria-label="Farm cover photo" />
+      <div className="store-cover has-photo" role="img" aria-label="Farm cover photo: crop rows at Okafor Family Farm" style={{ backgroundImage: `url(${IMG('farm-cover')})` }} />
       <div className="store-head">
         <div className="store-logo">{f.initials}</div>
         <div className="grow stack" style={{ gap: 6, paddingBottom: 6 }}>
@@ -169,13 +176,14 @@ export function FarmStorefront({ state }: { state: string }) {
 }
 
 export function ProductDetail({ state }: { state: string }) {
+  const delivery = Number(useProto().version.slice(1)) >= 2; // V2 adds delivery
   const p = PRODUCTS[0], f = FARMS.okafor, out = state === 'sold out';
   return (
     <PublicShell active="marketplace" url="/product/okafor-roma-tomatoes">
       <section className="section" style={{ paddingTop: 'var(--s-5)' }}><div className="wrap stack-lg">
         <nav aria-label="Breadcrumb"><ol className="breadcrumb"><li><Clickable to="marketplace">Browse</Clickable></li><li aria-hidden="true"><Icon name="chev" /></li><li>Vegetables</li><li aria-hidden="true"><Icon name="chev" /></li><li aria-current="page">{p.name}</li></ol></nav>
         <div className="split">
-          <div className="gallery"><Photo p={p} /><div className="thumbs">{[0, 1, 2, 3].map(i => <div key={i} className="ph crop" style={{ aspectRatio: '1' }}><Icon name="leaf" /></div>)}</div></div>
+          <div className="gallery"><Photo p={p} /><div className="thumbs">{['50% 50%', '20% 30%', '80% 70%', '50% 90%'].map((pos, i) => <div key={i} style={{ aspectRatio: '1', display: 'grid' }}><Photo p={p} pos={pos} /></div>)}</div></div>
           <aside className="card stack buy-box">
             <div className="row-between"><Badge>Vegetables</Badge><Status s={out ? 'Sold out' : p.status} /></div>
             <h2>{p.name}</h2>
@@ -186,7 +194,9 @@ export function ProductDetail({ state }: { state: string }) {
                   <Kv rows={[['Available', '2,000 kg'], ['Minimum order', '20 kg'], ['Available until', '15 Dec 2026'], ['Stock confirmed', p.confirmed]]} />
                   <div className="field"><span>Quantity (kg)</span><div className="row-between"><Stepper value={20} label="Quantity in kg" /><b className="num">{naira(7000)}</b></div></div>
                 </>}
-            <Alert tone="info" icon="pin" title="Pickup only for now">Farm gate, Issele-Uku · Mon–Sat 7am–5pm. Delivery arrives in version 2.</Alert>
+            {delivery
+              ? <Alert tone="info" icon="truck" title="Pickup or delivery">Collect at the farm gate in Issele-Uku, or get it delivered by a verified transporter. You see their price before you pay.</Alert>
+              : <Alert tone="info" icon="pin" title="Pickup only for now">Farm gate, Issele-Uku · Mon–Sat 7am–5pm. Delivery arrives in version 2.</Alert>}
             {out ? <Btn block toast="We will tell you when it is back">Notify me when available</Btn> : <Btn block to="checkout">Buy now</Btn>}
             <div className="row"><Btn variant="secondary" className="grow" icon="share" modal="share-product">Share</Btn><Btn variant="secondary" className="grow" icon="chat" to="soon:v5">Message farmer</Btn></div>
             <hr className="divider" />

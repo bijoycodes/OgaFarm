@@ -6,7 +6,7 @@ import type { ScreenDef, VersionDef, Role } from '@shared/registry';
 import { ShareSheet, StockModal } from '@shared/blocks';
 import { Icon } from '@shared/ui/Icon';
 
-const ROLE_HOME: Partial<Record<Role, string>> = { visitor: 'landing', farmer: 'farmer-dashboard', buyer: 'buyer-browse', admin: 'admin-login' };
+const ROLE_HOME: Partial<Record<Role, string>> = { visitor: 'landing', farmer: 'farmer-dashboard', buyer: 'buyer-browse', admin: 'admin-login', transporter: 'transporter-dashboard' };
 const ROLE_LABEL: Record<Role, string> = { visitor: 'Visitor', farmer: 'Farmer', buyer: 'Buyer', admin: 'Admin', supplier: 'Supplier', transporter: 'Transporter', jobseeker: 'Job seeker', consultant: 'Consultant' };
 const FUTURE_ROLES: [Role, string][] = [['transporter', 'v2'], ['supplier', 'v3'], ['jobseeker', 'v5'], ['consultant', 'v5']];
 
@@ -72,9 +72,14 @@ export function ProtoApp() {
   }, [screenId]);
   useEffect(() => { if (modal) (document.querySelector('.modal button, .modal input') as HTMLElement | null)?.focus(); }, [modal]);
 
-  const go = useCallback((id: string) => {
+  const go = useCallback((raw: string) => {
+    // "screen@state" opens a screen in a given state (used for flows, e.g. "order-status@delivered")
+    const [id, st] = raw.split('@');
+    if (st) setStates(prev => ({ ...prev, [id.startsWith('soon:') ? id.split(':')[2] : id]: st }));
     if (id.startsWith('soon:')) {
-      const v = VERSIONS.find(x => x.id === id.slice(5));
+      const [, vid, target] = id.split(':');
+      if (target && screens.has(target)) { if (location.hash.slice(1) === target) setScreenId(target); else location.hash = target; return; }
+      const v = VERSIONS.find(x => x.id === vid);
       setToastMsg(v ? `Coming in ${v.id.toUpperCase()} · ${v.name}` : 'Coming in a later version');
       return;
     }
@@ -89,7 +94,7 @@ export function ProtoApp() {
   const proto: Proto = {
     go, toast: setToastMsg, openModal: setModal, closeModal: () => setModal(null),
     setState: s => setStates(prev => ({ ...prev, [screenId]: s })),
-    theme, setTheme
+    version: versionId, theme, setTheme
   };
 
   const groups = useMemo(() => {
@@ -126,7 +131,7 @@ export function ProtoApp() {
         <label>Role
           <select value={current?.role ?? 'visitor'} onChange={e => { const h = ROLE_HOME[e.target.value as Role]; if (h) go(h); }}>
             {(['visitor', 'farmer', 'buyer', 'admin'] as Role[]).map(r => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
-            {FUTURE_ROLES.map(([r, v]) => <option key={r} value={r} disabled>{ROLE_LABEL[r]} ({v.toUpperCase()})</option>)}
+            {FUTURE_ROLES.map(([r, v]) => { const ready = !!ROLE_HOME[r] && screens.has(ROLE_HOME[r]!); return <option key={r} value={r} disabled={!ready}>{ROLE_LABEL[r]}{ready ? '' : ` (${v.toUpperCase()})`}</option>; })}
           </select>
         </label>
         <div className="seg" role="group" aria-label="Device">

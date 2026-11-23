@@ -1,5 +1,7 @@
 # OgaFarm UI prototype
 
+> This is the live prototype shared with the client (port **5173**). Try changes in `design/prototype-staging` (port 5174) first, then copy them here.
+
 A clickable prototype of the OgaFarm app with sample data only, built in React (Vite + TypeScript).
 There is no backend and no real payments, and nothing is saved. Its job is to show how each release will look and work before we build it for real.
 The shared components and design tokens are written so the production apps (Next.js web and admin, Expo mobile) can reuse them.
@@ -12,7 +14,7 @@ The screens are organised by release, one folder per version, matching `docs/pro
 | Version | Folder | Roadmap | Status |
 |---|---|---|---|
 | V1 · MVP: Farmer sells, buyer buys | `versions/v1-mvp` | I1 | **Built** (33 screens) |
-| V2 · Delivery and trust | `versions/v2-delivery-trust` | I2 | Planned |
+| V2 · Delivery and trust | `versions/v2-delivery-trust` | I2 | **Built** (17 new, 3 updated) |
 | V3 · Suppliers and business buying | `versions/v3-suppliers-b2b` | I3 | Planned |
 | V4 · Group buying and rescue produce | `versions/v4-group-rescue` | I4 | Planned |
 | V5 · Jobs, consultants and markets | `versions/v5-jobs-consultants-markets` | I5 | Planned |
@@ -25,6 +27,7 @@ Each version folder has a `README.md` (what it adds) and an `index.ts` (its list
 design/prototype/
   index.html, package.json, vite.config.ts, tsconfig.json
   public/icon.png                 app icon
+  public/images/                  sample photos (free Unsplash/Pexels licence, see images/CREDITS.md)
   scripts/make-artifact.mjs       turns the build into a shareable page
   scripts/build-icons.mjs         extracts the Phosphor icons we use (regular weight) into src/shared/ui/icons.generated.ts
   src/

@@ -193,3 +193,76 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .theme-toggle .ic { transition: transform var(--dur-2, 240ms) var(--ease-out, ease); }
 .theme-toggle:active .ic { transform: rotate(-30deg); }
 @media (prefers-reduced-motion: reduce) { .theme-toggle .ic { transition: none; } }
+
+/* ── V2: delivery and trust ─────────────────────── */
+/* Pickup → drop-off route */
+.route { display: grid; gap: 14px; }
+.route .stop { display: flex; gap: 12px; align-items: flex-start; position: relative; }
+.route .pt { width: 12px; height: 12px; border-radius: 50%; margin-top: 5px; flex: none; background: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+.route .pt.to { background: var(--harvest-fill); box-shadow: 0 0 0 4px var(--harvest-soft); }
+.route .stop:first-child::after { content: ""; position: absolute; left: 5px; top: 22px; bottom: -14px; width: 2px; background: var(--line-strong); }
+.route .lbl { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+/* Star ratings: display and input */
+.stars { display: inline-flex; align-items: center; gap: 2px; color: var(--line-strong); }
+.stars .on { color: var(--harvest); }
+.stars button { background: none; border: 0; min-width: 44px; min-height: 44px; display: grid; place-items: center; border-radius: var(--r-sm); cursor: pointer; color: var(--line-strong); }
+.stars button.on { color: var(--harvest); background: var(--harvest-soft); }
+.stars button .ic { width: 24px; height: 24px; }
+/* Quote comparison */
+.quote { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; }
+.quote .price { font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 600; font-variant-numeric: tabular-nums lining-nums; }
+.code-display { font-family: var(--font-display); font-size: var(--fs-3xl); font-weight: 600; letter-spacing: .2em; font-variant-numeric: tabular-nums lining-nums; color: var(--primary-ink); }
+.thread { display: flex; flex-direction: column; gap: 10px; }
+.thread .msg { padding: 10px 14px; border-radius: var(--r-md); background: var(--sunken); }
+.thread .msg.me { background: var(--primary-soft); }
+.thread .who { font-size: var(--fs-xs); font-weight: 700; color: var(--muted); }
+@container app (max-width: 720px) { .quote { grid-template-columns: 1fr; gap: 8px; } .quote > .avatar { display: none; } .quote .price { font-size: var(--fs-2xl); } }
+
+/* ── Real photos (sample images in public/images) ── */
+.ph.has-img::before { display: none; }
+.ph > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ph .tag { z-index: 1; }
+.store-cover.has-photo { background-size: cover; background-position: center; }
+.store-cover.has-photo::before, .store-cover.has-photo::after { display: none; }
+.store-cover.has-photo { box-shadow: inset 0 -60px 60px -40px rgb(0 0 0 / .25); }
+
+/* A form group drawn as a card: keep its heading inside the card, not on the border */
+fieldset.card > legend { float: left; width: 100%; padding: 0; margin: 0 0 var(--s-2); }
+fieldset.card > legend + * { clear: both; }
+@container app (max-width: 720px) { .g3.choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Tables on phones: each row is a card; the first cell is its title, other cells show "Label  value" */
+@container app (max-width: 720px) {
+  .table-wrap.cards-m { border: 0; background: none; overflow: visible; }
+  .table-wrap.cards-m table, .table-wrap.cards-m tbody, .table-wrap.cards-m tr, .table-wrap.cards-m td { display: block; width: 100%; }
+  .table-wrap.cards-m thead { display: none; }
+  .table-wrap.cards-m tr { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 12px 16px; margin-bottom: 10px; box-shadow: var(--shadow-1); }
+  .table-wrap.cards-m td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; border: 0; white-space: normal; text-align: right; }
+  .table-wrap.cards-m td::before { content: attr(data-label); color: var(--muted); font-size: var(--fs-xs); font-weight: 700; text-align: left; flex: none; }
+  .table-wrap.cards-m td:first-child { font-size: var(--fs-md); padding-top: 2px; text-align: left; }
+  .table-wrap.cards-m td:first-child::before { display: none; }
+  .table-wrap.cards-m td:empty, .table-wrap.cards-m td:not([data-label]):not(:first-child)::before { display: none; }
+  .table-wrap.cards-m td:last-child:has(> .btn) { padding-top: 10px; }
+  .table-wrap.cards-m td:last-child > .btn { flex: 1; }
+}
+@container app (max-width: 720px) {
+  .card .table-wrap.cards-m tr { box-shadow: none; background: var(--sunken); border-color: transparent; }
+  .g3 .stat .v, .g4 .stat .v { font-size: var(--fs-2xl); }
+}
+
+/* On/off switch card (e.g. transporter availability) */
+.switch-card { display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 14px; min-height: 56px; border: 1px solid var(--line-strong); background: var(--card); border-radius: var(--r-lg); cursor: pointer; text-align: left; color: var(--ink); box-shadow: var(--shadow-1); transition: border-color var(--dur-fast, 150ms) ease, background-color var(--dur-fast, 150ms) ease; font: inherit; }
+.switch-card:hover { border-color: var(--primary); }
+.switch-card:disabled { cursor: not-allowed; opacity: .6; }
+.switch-card.is-on { border-color: color-mix(in srgb, var(--primary) 45%, var(--line)); background: var(--primary-soft); }
+.sw-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.switch-card.is-on .sw-dot { background: var(--ok, var(--primary)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 22%, transparent); animation: sw-pulse 2s ease-in-out infinite; }
+.sw-text { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; line-height: 1.3; }
+.sw-text b { font-size: var(--fs-sm); }
+.sw-track { position: relative; width: 48px; height: 28px; border-radius: 999px; background: color-mix(in srgb, var(--muted) 60%, var(--card)); flex: none; transition: background-color var(--dur-2, 240ms) var(--ease-out, ease); }
+.sw-thumb { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .25); transition: transform var(--dur-2, 240ms) var(--ease-out, ease); }
+.switch-card.is-on .sw-track { background: var(--primary); }
+.switch-card.is-on .sw-thumb { transform: translateX(20px); }
+@keyframes sw-pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--primary) 8%, transparent); } }
+@media (prefers-reduced-motion: reduce) { .sw-thumb, .sw-track { transition: none; } .switch-card.is-on .sw-dot { animation: none; } }
+@container app (max-width: 720px) { .row-between > .switch-card { flex-basis: 100%; } }

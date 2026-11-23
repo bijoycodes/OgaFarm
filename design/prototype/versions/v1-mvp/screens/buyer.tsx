@@ -86,7 +86,7 @@ export function BuyerAccount() {
   return (
     <AppShell role="buyer" active="buyer-account" title="Account">
       <h1>Account</h1>
-      <div className="card stack"><div className="row"><span className="avatar" style={{ width: 56, height: 56 }}>NE</span><div><h3>Ngozi Eze</h3><div className="small muted">+234 806 555 0142 · Individual buyer</div></div></div></div>
+      <div className="card stack"><div className="row" style={{ flexWrap: 'nowrap' }}><span className="avatar" style={{ width: 56, height: 56, flex: 'none' }}>NE</span><div className="grow" style={{ minWidth: 0 }}><h3>Ngozi Eze</h3><div className="small muted">+234 806 555 0142 · Individual buyer</div></div></div></div>
       <div className="card list" style={{ paddingBlock: 4 }}>{([['user', 'Personal details'], ['pin', 'Saved pickup places'], ['bell', 'Notification settings'], ['lock', 'Privacy and data'], ['store', 'Start selling on OgaFarm']] as const).map(([i, t]) => (
         <Clickable key={t} className="list-row" toast={`${t} opens`}><Icon name={i} /><span className="grow">{t}</span><Icon name="chev" /></Clickable>
       ))}</div>

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Icon } from '../ui/Icon';
 import { Btn, IconBtn, Clickable, Badge, ThemeToggle } from '../ui/ui';
+import { useProto } from '@app/context';
 
 const ICON_SRC = './icon.png';
 
@@ -45,14 +46,17 @@ function Footer() {
 }
 
 /* ---------------- signed-in app ---------------- */
-type NavItem = { to: string; icon: string; label: string; short?: string; count?: string };
-const NAV: Record<'farmer' | 'buyer' | 'admin', NavItem[]> = {
+/** `since`: first version that has this item (e.g. 'v2'). Earlier versions hide it. */
+type NavItem = { to: string; icon: string; label: string; short?: string; count?: string; since?: string };
+export type AppRole = 'farmer' | 'buyer' | 'admin' | 'transporter';
+const NAV: Record<AppRole, NavItem[]> = {
   farmer: [
     { to: 'farmer-dashboard', icon: 'home', label: 'Dashboard', short: 'Home' },
     { to: 'storefront-editor', icon: 'store', label: 'My farm', short: 'Farm' },
     { to: 'farmer-listings', icon: 'box', label: 'Listings', short: 'Listings' },
     { to: 'farmer-orders', icon: 'receipt', label: 'Orders', short: 'Orders', count: '3' },
     { to: 'notifications', icon: 'bell', label: 'Notifications', short: 'Alerts' },
+    { to: 'farmer-reviews', icon: 'star', label: 'Reviews', since: 'v2' },
     { to: 'subscription', icon: 'card', label: 'Subscription' }
   ],
   buyer: [
@@ -66,18 +70,30 @@ const NAV: Record<'farmer' | 'buyer' | 'admin', NavItem[]> = {
     { to: 'admin-verification', icon: 'shield', label: 'Verification', short: 'Verify', count: '7' },
     { to: 'admin-users', icon: 'users', label: 'Users', short: 'Users' },
     { to: 'admin-payments', icon: 'card', label: 'Payments', short: 'Payments' },
+    { to: 'admin-transporters', icon: 'truck', label: 'Transporters', count: '3', since: 'v2' },
+    { to: 'admin-disputes', icon: 'scales', label: 'Disputes', count: '2', since: 'v2' },
+    { to: 'admin-reviews', icon: 'star', label: 'Reviews', since: 'v2' },
     { to: 'admin-audit', icon: 'list', label: 'Audit log', short: 'Audit' }
+  ],
+  transporter: [
+    { to: 'transporter-dashboard', icon: 'home', label: 'Dashboard', short: 'Home' },
+    { to: 'transporter-requests', icon: 'list', label: 'Delivery requests', short: 'Requests', count: '4' },
+    { to: 'transporter-job', icon: 'truck', label: 'My jobs', short: 'Jobs' },
+    { to: 'transporter-profile', icon: 'user', label: 'My profile', short: 'Profile' }
   ]
 };
 const WHO = {
   farmer: { n: 'Emeka Okafor', s: 'Okafor Family Farm', i: 'EO', notif: 'notifications' },
   buyer: { n: 'Ngozi Eze', s: 'Individual buyer · Asaba', i: 'NE', notif: 'buyer-notifications' },
-  admin: { n: 'Aisha Bello', s: 'Verification reviewer', i: 'AB', notif: 'admin-verification' }
+  admin: { n: 'Aisha Bello', s: 'Verification reviewer', i: 'AB', notif: 'admin-verification' },
+  transporter: { n: 'Sunday Ike', s: 'Ike Haulage · Pickup truck', i: 'SI', notif: 'transporter-requests' }
 };
 
 export function AppShell({ role, active, title, back, actions, children }:
-  { role: 'farmer' | 'buyer' | 'admin'; active: string; title: string; back?: string; actions?: ReactNode; children: ReactNode }) {
-  const items = NAV[role], who = WHO[role];
+  { role: AppRole; active: string; title: string; back?: string; actions?: ReactNode; children: ReactNode }) {
+  const { version } = useProto();
+  const vn = (v?: string) => Number((v ?? 'v1').slice(1));
+  const items = NAV[role].filter(it => vn(it.since) <= vn(version)), who = WHO[role];
   return (
     <div className={`app ${role === 'admin' ? 'admin' : ''}`}>
       <aside className="sidebar">
@@ -90,6 +106,7 @@ export function AppShell({ role, active, title, back, actions, children }:
           <div className="row" style={{ gap: 10, flexWrap: 'nowrap' }}><span className="avatar">{who.i}</span><div className="grow"><b className="small">{who.n}</b><div className="xs muted">{who.s}</div></div></div>
           {role === 'farmer' && <Badge tone="ok" icon="check">Annual plan · 8 months left</Badge>}
           {role === 'admin' && <Badge tone="info" icon="lock">Signed in with 2-step</Badge>}
+          {role === 'transporter' && <Badge tone="ok" icon="shield">Verified transporter</Badge>}
         </div>
       </aside>
       <div className="main">

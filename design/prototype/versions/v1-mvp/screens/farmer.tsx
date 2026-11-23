@@ -2,7 +2,7 @@
 import { Icon } from '@shared/ui/Icon';
 import { Btn, IconBtn, Clickable, Status, Alert, Empty, Photo, Tabs, Chips, Timeline, Field, Kv, LinkBox, Badge } from '@shared/ui/ui';
 import { AppShell } from '@shared/layout/shells';
-import { PRODUCTS, ORDERS, naira, initials } from '@shared/data/sample';
+import { PRODUCTS, ORDERS, naira, initials, IMG } from '@shared/data/sample';
 
 const mine = PRODUCTS.filter(p => p.farm === 'okafor');
 
@@ -36,7 +36,7 @@ export function FarmerDashboard({ state }: { state: string }) {
       <div className="card share-strip stack">
         <div><h3>Share my storefront</h3><p className="small muted">Send your link to customers, WhatsApp groups and your status.</p></div>
         <LinkBox url="farmoga.com/farm/okafor-family-farm" />
-        <div className="row"><Btn size="sm" variant="wa" icon="chat" toast="Opens WhatsApp with your storefront link">WhatsApp</Btn><Btn size="sm" variant="secondary" icon="share" modal="share-store">More options</Btn></div>
+        <div className="row"><Btn variant="wa" icon="chat" toast="Opens WhatsApp with your storefront link">WhatsApp</Btn><Btn variant="secondary" icon="share" modal="share-store">More options</Btn></div>
       </div>
       <div className="split">
         <div className="card stack">
@@ -61,7 +61,7 @@ export function StorefrontEditor({ state }: { state: string }) {
       <div className="row-between"><div><h1>My farm storefront</h1><p className="muted">This is what buyers see at your link.</p></div><div className="row"><Btn variant="secondary" to="farm-storefront">Preview</Btn><Btn toast="Storefront saved">Save changes</Btn></div></div>
       <div className="card stack-lg"><h3>Photos</h3>
         <div className="g2">
-          <div className="field"><span>Cover photo</span><div className="store-cover" style={{ borderRadius: 'var(--r-md)', height: 120 }} /><Btn size="sm" variant="secondary" icon="image" toast="Choose a cover photo" style={{ alignSelf: 'flex-start' }}>Change cover</Btn></div>
+          <div className="field"><span>Cover photo</span><div className="store-cover has-photo" style={{ borderRadius: 'var(--r-md)', height: 120, backgroundImage: `url(${IMG('farm-cover')})` }} /><Btn size="sm" variant="secondary" icon="image" toast="Choose a cover photo" style={{ alignSelf: 'flex-start' }}>Change cover</Btn></div>
           <div className="field"><span>Logo</span><div className="row"><div className="store-logo" style={{ margin: 0, width: 84, height: 84, fontSize: 'var(--fs-2xl)' }}>OF</div><Btn size="sm" variant="secondary" icon="upload" toast="Choose a logo">Upload logo</Btn></div></div>
         </div>
       </div>
@@ -201,13 +201,16 @@ export function Subscription({ state }: { state: string }) {
         <div className="card stack"><h3>What your plan includes</h3><ul className="checklist">{['Storefront with five tabs', 'Unlimited listings', 'Orders and buyer messages', 'Weekly and monthly reports'].map(x => <li key={x} className="done"><span className="ck"><Icon name="check" /></span>{x}</li>)}</ul></div>
       </div>
       <div className="card stack"><h3>Payment history</h3>
-        <div className="table-wrap" style={{ border: 0 }}><table>
+        <div className="table-wrap hide-m" style={{ border: 0 }}><table>
           <thead><tr><th>Date</th><th>Plan</th><th>Reference</th><th className="num">Amount</th><th>Status</th></tr></thead>
           <tbody>
             <tr><td>23 Nov 2026</td><td>Annual</td><td>OGF-SUB-88213</td><td className="num">{naira(95000)}</td><td><Status s="Paid" /></td></tr>
             <tr><td>23 Aug 2026</td><td>Quarterly</td><td>OGF-SUB-61057</td><td className="num">{naira(30000)}</td><td><Status s="Paid" /></td></tr>
           </tbody>
         </table></div>
+        <div className="list show-m">{([['Annual plan', '23 Nov 2026 · OGF-SUB-88213', 95000], ['Quarterly plan', '23 Aug 2026 · OGF-SUB-61057', 30000]] as const).map(([plan, meta, amt]) => (
+          <div key={meta} className="list-row"><div className="grow"><div className="t small">{plan}</div><div className="xs muted">{meta}</div></div><div style={{ textAlign: 'right' }}><b className="num small">{naira(amt)}</b><div><Status s="Paid" /></div></div></div>
+        ))}</div>
       </div>
     </AppShell>
   );

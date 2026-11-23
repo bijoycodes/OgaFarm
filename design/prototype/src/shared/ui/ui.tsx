@@ -1,5 +1,5 @@
 import type { ReactNode, CSSProperties } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useProto } from '@app/context';
 import { Icon } from './Icon';
 import { FARMS, naira, type Product } from '../data/sample';
@@ -41,7 +41,10 @@ const STATUS: Record<string, string> = {
   'New': 'b-wheat', 'Preparing': 'b-info', 'Ready for pickup': 'b-ok', 'Collected': 'b-neutral', 'Cancelled': 'b-danger',
   'Available now': 'b-ok', 'Recurring supply': 'b-ok', 'Expected soon': 'b-info', 'Seasonal': 'b-neutral', 'Sold out': 'b-danger',
   'Paid': 'b-ok', 'Payment pending': 'b-warn', 'Refunded': 'b-neutral', 'Draft': 'b-neutral', 'Hidden': 'b-danger',
-  'Pending review': 'b-warn', 'Approved': 'b-ok', 'Rejected': 'b-danger', 'More info needed': 'b-info', 'Active': 'b-ok', 'Expired': 'b-danger', 'Expiring': 'b-warn'
+  'Pending review': 'b-warn', 'Approved': 'b-ok', 'Rejected': 'b-danger', 'More info needed': 'b-info', 'Active': 'b-ok', 'Expired': 'b-danger', 'Expiring': 'b-warn',
+  'Waiting for quotes': 'b-warn', 'Quote sent': 'b-info', 'Quoted': 'b-info', 'Assigned': 'b-info', 'Picked up': 'b-info', 'In transit': 'b-info', 'Delivered': 'b-ok',
+  'Inspecting': 'b-warn', 'Issue reported': 'b-danger', 'Dispute open': 'b-danger', 'Under review': 'b-warn', 'Resolved': 'b-ok', 'Waiting for reply': 'b-warn',
+  'Published': 'b-ok', 'Pending moderation': 'b-warn', 'Investigation requested': 'b-warn', 'Kept': 'b-neutral', 'Removed': 'b-danger', 'Open': 'b-ok', 'Closed': 'b-neutral'
 };
 export const Badge = ({ tone = 'neutral', icon, children }: { tone?: 'ok' | 'warn' | 'danger' | 'info' | 'neutral' | 'wheat'; icon?: string; children: ReactNode }) =>
   <span className={`badge b-${tone}`}>{icon && <Icon name={icon} />}{children}</span>;
@@ -66,8 +69,11 @@ export function Empty({ icon, tone, title, children, actions, card = true }: { i
 }
 export const Skel = ({ h = 14, w = '100%', r }: { h?: number | string; w?: number | string; r?: number }) => <div className="skel" style={{ height: h, width: w, borderRadius: r }} />;
 
-export const Photo = ({ p, tag }: { p: Pick<Product, 'kind' | 'icon' | 'name'>; tag?: ReactNode }) =>
-  <div className={`ph ${p.kind}`}>{tag && <span className="tag">{tag}</span>}<Icon name={p.icon} /><span className="sr">Photo of {p.name}</span></div>;
+export const Photo = ({ p, tag, pos }: { p: Pick<Product, 'kind' | 'icon' | 'name' | 'img'>; tag?: ReactNode; pos?: string }) =>
+  <div className={`ph ${p.kind} ${p.img ? 'has-img' : ''}`}>
+    {p.img ? <img src={p.img} alt={p.name} loading="lazy" decoding="async" style={pos ? { objectPosition: pos } : undefined} /> : <><Icon name={p.icon} /><span className="sr">Photo of {p.name}</span></>}
+    {tag && <span className="tag">{tag}</span>}
+  </div>;
 
 export function ProductCard({ p, to = 'product' }: { p: Product; to?: string }) {
   const f = FARMS[p.farm];
@@ -143,6 +149,33 @@ export function ThemeToggle() {
   return (
     <button type="button" className="icon-btn theme-toggle" aria-label={label} title={label} onClick={() => setTheme(dark ? 'light' : 'dark')}>
       <Icon name={dark ? 'sun' : 'moon'} />
+    </button>
+  );
+}
+
+/** Table wrapper: scrolls on desktop; on phones each row becomes a card. It copies each column
+    heading onto its cells (data-label) so the card can show "Owner: Emeka Okafor". */
+export function TableWrap({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const table = ref.current?.querySelector('table'); if (!table) return;
+    const heads = [...table.querySelectorAll('thead th')].map(th => th.textContent?.trim() ?? '');
+    table.querySelectorAll('tbody tr').forEach(tr => [...tr.children].forEach((td, i) => { if (heads[i]) td.setAttribute('data-label', heads[i]); }));
+  });
+  return <div ref={ref} className="table-wrap cards-m">{children}</div>;
+}
+
+/** On/off switch (role="switch"). Full card is the tap target; state is announced as on/off. */
+export function Switch({ label, on = false, onText, offText, disabled, onChange }:
+  { label: string; on?: boolean; onText?: ReactNode; offText?: ReactNode; disabled?: boolean; onChange?: (v: boolean) => void }) {
+  const [v, setV] = useState(on);
+  useEffect(() => setV(on), [on]);
+  return (
+    <button type="button" role="switch" aria-checked={v} disabled={disabled} className={`switch-card ${v ? 'is-on' : ''}`}
+      onClick={() => { setV(!v); onChange?.(!v); }}>
+      <span className="sw-dot" aria-hidden="true" />
+      <span className="sw-text"><b>{label}</b>{(v ? onText : offText) && <span className="xs muted">{v ? onText : offText}</span>}</span>
+      <span className="sw-track" aria-hidden="true"><span className="sw-thumb" /></span>
     </button>
   );
 }

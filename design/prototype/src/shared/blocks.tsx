@@ -1,6 +1,6 @@
 /* Blocks reused by several screens and versions */
 import { Icon } from './ui/Icon';
-import { Btn, IconBtn, LinkBox, Chips, Field, Empty, ProductCard, Skel, Clickable } from './ui/ui';
+import { Btn, IconBtn, LinkBox, Chips, Field, Empty, ProductCard, Skel, Clickable, Photo } from './ui/ui';
 import { PLANS, PRODUCTS, naira } from './data/sample';
 
 export function Plans({ selectable }: { selectable?: boolean }) {
@@ -36,7 +36,7 @@ export function ShareSheet({ what, url, preview }: { what: string; url: string; 
       <div className="card card-tight" style={{ background: 'var(--sunken)' }}>
         <div className="eyebrow">How the link looks in chat</div>
         <div className="row" style={{ marginTop: 8, alignItems: 'flex-start', flexWrap: 'nowrap' }}>
-          <div className="ph crop" style={{ width: 76, flex: 'none' }}><Icon name="leaf" /></div>
+          <div style={{ width: 76, flex: 'none' }}><Photo p={PRODUCTS[0]} /></div>
           <div className="grow small"><b>{preview}</b><div className="muted xs">Fresh produce from Issele-Uku, Delta State. Order on OgaFarm.</div><div className="xs" style={{ color: 'var(--primary-ink)' }}>farmoga.com</div></div>
         </div>
       </div>
@@ -81,7 +81,7 @@ export function Browse({ state, productTo = 'product' }: { state: string; produc
     <>
       <div className="row-between">
         <div><h2>Browse produce</h2><p className="small muted">{state === 'default' ? '8 results near Asaba, Delta State' : ' '}</p></div>
-        <div className="row"><Btn variant="secondary" size="sm" className="filter-btn" icon="filter" toast="Opens filters">Filters</Btn><select className="select" style={{ width: 'auto', minHeight: 36 }} aria-label="Sort"><option>Nearest first</option><option>Lowest price</option><option>Recently confirmed</option></select></div>
+        <div className="row browse-tools"><Btn variant="secondary" size="sm" className="filter-btn" icon="filter" toast="Opens filters">Filters</Btn><select className="select" style={{ width: 'auto', minHeight: 36 }} aria-label="Sort"><option>Nearest first</option><option>Lowest price</option><option>Recently confirmed</option></select></div>
       </div>
       <div className="input-group"><span><Icon name="search" /></span><input className="input" defaultValue={state === 'empty' ? 'cocoyam' : ''} placeholder="Search produce, livestock, inputs" aria-label="Search" /></div>
       <div className="browse"><aside className="filter-panel card"><Filters /></aside><div className="stack">{results}</div></div>

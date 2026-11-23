@@ -1,0 +1,28 @@
+{
+  "name": "ogafarm-prototype-staging",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Staging copy of the OgaFarm UI prototype: try changes here before moving them to design/prototype.",
+  "scripts": {
+    "dev": "vite --port 5174 --host 127.0.0.1",
+    "tunnel": "cloudflared tunnel --url http://localhost:5174",
+    "icons": "node scripts/build-icons.mjs",
+    "build": "tsc --noEmit && vite build && node scripts/make-artifact.mjs",
+    "preview": "vite preview --port 4174 --host 127.0.0.1",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@phosphor-icons/react": "^2.1.7",
+    "@types/node": "^22.9.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.6.3",
+    "vite": "5.4.11"
+  }
+}
