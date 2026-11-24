@@ -64,10 +64,10 @@ const CATS: [string, string, number][] = [['All produce', 'grid', 8], ['Vegetabl
 const AVAIL = ['Available now', 'Expected soon', 'Recurring', 'Seasonal'];
 const RADIUS = ['10 km', '25 km', '50 km', 'State'];
 
-function FilterSection({ title, children, open = true }: { title: string; children: ReactNode; open?: boolean }) {
+function FilterSection({ title, children, open = true, note }: { title: string; children: ReactNode; open?: boolean; note?: string }) {
   return (
     <details className="f-sec" open={open}>
-      <summary><span>{title}</span><Icon name="chev" /></summary>
+      <summary><span>{title}{note && <span className="f-sec-note">{note}</span>}</span><Icon name="chev" /></summary>
       <div className="f-body">{children}</div>
     </details>
   );
@@ -100,7 +100,14 @@ function ToggleChips({ items, initial }: { items: string[]; initial: string[] })
 }
 
 export function Filters({ sheet }: { sheet?: boolean }) {
-  const [cat, setCat] = useState('All produce');
+  // Categories are multi-select. An empty list means "All produce".
+  const [cats, setCats] = useState<string[]>([]);
+  const toggleCat = (name: string) => {
+    if (name === 'All produce') { setCats([]); return; }
+    setCats(v => v.includes(name) ? v.filter(x => x !== name) : [...v, name]);
+  };
+  const isOn = (name: string) => name === 'All produce' ? cats.length === 0 : cats.includes(name);
+  const matching = cats.length ? CATS.filter(([n]) => cats.includes(n)).reduce((a, [, , n]) => a + n, 0) : 8;
   const [radius, setRadius] = useState('50 km');
   return (
     <div className={`filters ${sheet ? 'filters-sheet' : ''}`}>
@@ -108,9 +115,10 @@ export function Filters({ sheet }: { sheet?: boolean }) {
         <h3>Filters <span className="f-count">3</span></h3>
         {sheet ? <IconBtn icon="close" label="Close filters" close /> : <Clickable className="f-clear" toast="All filters cleared">Clear all</Clickable>}
       </div>
-      <FilterSection title="Category">
-        <div className="f-cats" role="radiogroup" aria-label="Category">{CATS.map(([name, ic, n]) => (
-          <button key={name} type="button" role="radio" aria-checked={cat === name} className="f-cat" onClick={() => setCat(name)}>
+      <FilterSection title="Category" note={cats.length ? `${cats.length} selected` : undefined}>
+        <div className="f-cats" role="group" aria-label="Category (choose one or more)">{CATS.map(([name, ic, n]) => (
+          <button key={name} type="button" role="checkbox" aria-checked={isOn(name)} className="f-cat" onClick={() => toggleCat(name)}>
+            <span className="f-box" aria-hidden="true"><Icon name="check" /></span>
             <span className="f-ic"><Icon name={ic} /></span><span className="grow">{name}</span><span className="f-n">{n}</span>
           </button>
         ))}</div>
@@ -130,7 +138,7 @@ export function Filters({ sheet }: { sheet?: boolean }) {
           <Switch label="Fresh stock only" onText="Stock confirmed in the last 24 hours" offText="Any confirmation date" />
         </div>
       </FilterSection>
-      {sheet && <div className="f-foot"><Btn variant="secondary" toast="All filters cleared">Clear all</Btn><Btn close toast="Showing 8 results">Show 8 results</Btn></div>}
+      {sheet && <div className="f-foot"><Btn variant="secondary" toast="All filters cleared">Clear all</Btn><Btn close toast={`Showing ${matching} results`}>Show {matching} results</Btn></div>}
     </div>
   );
 }
