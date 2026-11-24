@@ -38,7 +38,8 @@ const THEMES: [Theme, string, string][] = [['system', 'monitor', 'Match device']
 export function ProtoApp() {
   const built = VERSIONS.filter(v => v.status === 'built');
   const [versionId, setVersionId] = useState(() => { const s = store.get('oga-version'); return built.some(v => v.id === s) ? s! : built[built.length - 1].id; });
-  const [device, setDevice] = useState<'mobile' | 'desktop'>(() => store.get('oga-device') === 'mobile' ? 'mobile' : 'desktop');
+  type Device = 'mobile' | 'tablet' | 'desktop';
+  const [device, setDevice] = useState<Device>(() => { const d = store.get('oga-device'); return d === 'mobile' || d === 'tablet' ? d : 'desktop'; });
   const [theme, setTheme] = useState<Theme>(() => { const t = store.get('oga-theme'); return t === 'light' || t === 'dark' ? t : 'system'; });
   useEffect(() => {
     const root = document.documentElement;
@@ -140,7 +141,7 @@ export function ProtoApp() {
           </select>
         </label>
         <div className="seg" role="group" aria-label="Device">
-          {(['mobile', 'desktop'] as const).map(d => <button key={d} type="button" aria-pressed={device === d} onClick={() => { setDevice(d); store.set('oga-device', d); }}>{d === 'mobile' ? 'Mobile' : 'Desktop'}</button>)}
+          {(['mobile', 'tablet', 'desktop'] as const).map(d => <button key={d} type="button" aria-pressed={device === d} onClick={() => { setDevice(d); store.set('oga-device', d); }}>{d === 'mobile' ? 'Mobile' : d === 'tablet' ? 'Tablet' : 'Desktop'}</button>)}
         </div>
         <div className="seg theme-seg" role="group" aria-label="Colour theme">
           {THEMES.map(([t, ic, label]) => <button key={t} type="button" aria-pressed={theme === t} title={label} onClick={() => setTheme(t)}><Icon name={ic} /><span className="sr-only">{label}</span></button>)}
@@ -152,7 +153,7 @@ export function ProtoApp() {
         {stateList && <div className="state-pills" aria-label="Screen states">{stateList.map(s => <button key={s} type="button" aria-pressed={s === curState} onClick={() => proto.setState(s)}>{s[0].toUpperCase() + s.slice(1)}</button>)}</div>}
       </div>
 
-      <div id="device" tabIndex={-1} aria-label={`Screen: ${title}`} className={`device ${device === 'mobile' ? 'is-mobile' : ''}`}><div key={screenId + curState} className="screen-enter">{body}</div></div>
+      <div id="device" tabIndex={-1} aria-label={`Screen: ${title}`} className={`device ${device === 'mobile' ? 'is-mobile' : device === 'tablet' ? 'is-tablet' : ''}`}><div key={screenId + curState} className="screen-enter">{body}</div></div>
 
       {modal && MODALS[modal] && (
         <div className="modal-back" onClick={e => { if (e.target === e.currentTarget) setModal(null); }}>

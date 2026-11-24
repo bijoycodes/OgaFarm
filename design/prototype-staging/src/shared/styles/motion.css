@@ -79,9 +79,12 @@ tbody tr:nth-child(2) { animation-delay: 60ms; } tbody tr:nth-child(3) { animati
 .toast { animation: toast-in 580ms var(--ease-spring); }
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 16px) scale(.95); } }
 .alert, .error-summary { animation: rise-sm var(--dur-slow) var(--ease-out) backwards; }
-.mm-body > .mm-link { animation: menu-item 510ms var(--ease-out) backwards; }
-.mm-body > .mm-link:nth-child(2) { animation-delay: 60ms; } .mm-body > .mm-link:nth-child(3) { animation-delay: 130ms; }
-.mm-body > .mm-link:nth-child(4) { animation-delay: 190ms; } .mm-body > .mm-link:nth-child(5) { animation-delay: 260ms; }
+/* Phone menu links follow the panel in, one by one (panel slides for 720 ms) */
+.mm-body > .mm-link { animation: menu-item 700ms var(--ease-out) backwards; animation-delay: 220ms; }
+.mm-body > .mm-link:nth-child(2) { animation-delay: 310ms; } .mm-body > .mm-link:nth-child(3) { animation-delay: 400ms; }
+.mm-body > .mm-link:nth-child(4) { animation-delay: 490ms; } .mm-body > .mm-link:nth-child(5) { animation-delay: 580ms; }
+.mm-foot { animation: menu-foot 700ms var(--ease-out) 600ms backwards; }
+@keyframes menu-foot { from { opacity: 0; transform: translateY(12px); } }
 @keyframes menu-item { from { opacity: 0; transform: translateX(24px); } }
 
 /* Status changes: progress, timeline, checks */

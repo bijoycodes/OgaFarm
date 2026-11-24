@@ -72,6 +72,9 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .
 .device { container: app / inline-size; background: var(--bg); margin: 0 auto; max-width: 1280px; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-1); }
 .device.is-mobile { width: min(390px, 100%); height: min(812px, calc(100dvh - 150px)); min-height: 560px; overflow-y: auto; border: 10px solid var(--frame); border-radius: 44px; box-shadow: var(--shadow-3); scrollbar-width: none; }
 .device.is-mobile::-webkit-scrollbar { width: 0; }
+/* Tablet frame: iPad Air size held upright (820 × 1180) */
+.device.is-tablet { width: min(820px, 100%); height: min(1180px, calc(100dvh - 150px)); min-height: 640px; overflow-y: auto; border: 12px solid var(--frame); border-radius: 32px; box-shadow: var(--shadow-3); scrollbar-width: none; }
+.device.is-tablet::-webkit-scrollbar { width: 0; }
 
 /* Colour theme switch: Match device / Light / Dark */
 .theme-seg button { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; }

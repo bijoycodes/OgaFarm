@@ -40,6 +40,13 @@ Every version of the prototype (`versions/v1-mvp`, `v2-…`) follows these rules
 - Organic blob shapes behind the hero, storefront cover, sign-in pages, empty states and photo placeholders.
 - Shadows: three soft levels (`--shadow-1/2/3`), green-tinted.
 
+## Screen sizes (prototype toolbar: Mobile · Tablet · Desktop)
+| Size | Frame | Layout |
+|---|---|---|
+| Mobile | 390 px phone | Bottom tab bar, full-width buttons, filter sheet, full-screen side menu |
+| Tablet | 820 px (iPad Air upright) | Slim icon rail with labels instead of the sidebar, two-column cards, marketplace with three product columns and the filter sheet |
+| Desktop | up to 1280 px | Full sidebar, filter panel beside the products, two-column split screens |
+
 ## Motion (src/shared/styles/motion.css)
 - **Speed:** calm, 220–700 ms (slowed to about 1.6× the first version after review), transform and opacity only (smooth on low-end phones). Small overshoot only for "pop" moments (codes, ticks, active tab).
 - **Screen change:** the screen fades in; its sections rise 12 px one after another (70 ms apart); grid and list items follow the same way (first 8).
