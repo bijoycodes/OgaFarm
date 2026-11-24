@@ -1,8 +1,9 @@
 import type { VersionDef } from '../../src/shared/registry';
 import { Landing, Pricing, Marketplace, FarmStorefront, ProductDetail, Unavailable } from './screens/public';
-import { Signup, VerifyEmail, Signin, ChoosePlan, PaymentStatus, Verification } from './screens/onboarding';
+import { Signup, VerifyEmail, Signin, ForgotPassword, ChoosePlan, PaymentStatus, Verification } from './screens/onboarding';
 import { FarmerDashboard, StorefrontEditor, Listings, ListingForm, FarmerOrders, FarmerOrderDetail, Subscription, FarmerNotifications } from './screens/farmer';
 import { BuyerBrowse, Checkout, OrderStatus, BuyerOrders, BuyerNotifications, BuyerAccount } from './screens/buyer';
+import { AddRole } from './screens/account';
 import { AdminLogin, AdminOverview, AdminVerification, AdminReview, AdminUsers, AdminPayments, AdminAudit } from './screens/admin';
 
 const v1: VersionDef = {
@@ -23,8 +24,9 @@ const v1: VersionDef = {
     { id: 'unavailable', title: 'Unavailable or expired link', spec: 'S04 · BR-SHR-03', role: 'visitor', group: 'Public pages', status: 'new', Component: Unavailable },
     // Account and onboarding
     { id: 'signup', title: 'Sign up', spec: 'F02', role: 'visitor', group: 'Account and onboarding', status: 'new', states: ['default', 'error'], Component: Signup },
-    { id: 'verify-email', title: 'Email code check', spec: 'F02 · BR-NOT-06', role: 'visitor', group: 'Account and onboarding', status: 'new', states: ['default', 'wrong code'], Component: VerifyEmail },
-    { id: 'signin', title: 'Sign in', spec: 'F02 · BR-SHR-02', role: 'visitor', group: 'Account and onboarding', status: 'new', Component: Signin },
+    { id: 'verify-email', title: 'Confirm email (one time)', spec: 'F02 · BR-NOT-06', role: 'visitor', group: 'Account and onboarding', status: 'new', states: ['default', 'wrong code'], Component: VerifyEmail },
+    { id: 'signin', title: 'Sign in (email and password)', spec: 'F02 R6 · BR-ACC-09', role: 'visitor', group: 'Account and onboarding', status: 'new', states: ['default', 'wrong password'], Component: Signin },
+    { id: 'forgot-password', title: 'Forgot password', spec: 'F02 R6 · BR-ACC-10', role: 'visitor', group: 'Account and onboarding', status: 'new', states: ['email', 'reset'], Component: ForgotPassword },
     { id: 'choose-plan', title: 'Choose a plan', spec: 'F04', role: 'farmer', group: 'Account and onboarding', status: 'new', Component: ChoosePlan },
     { id: 'payment-status', title: 'Plan payment status', spec: 'F04 · BR-PAY', role: 'farmer', group: 'Account and onboarding', status: 'new', states: ['pending', 'active', 'failed'], Component: PaymentStatus },
     { id: 'verification', title: 'Farm verification', spec: 'F03', role: 'farmer', group: 'Account and onboarding', status: 'new', states: ['form', 'submitted'], Component: Verification },
@@ -44,6 +46,7 @@ const v1: VersionDef = {
     { id: 'buyer-orders', title: 'My orders', spec: 'F08', role: 'buyer', group: 'Buyer', status: 'new', states: ['default', 'empty'], Component: BuyerOrders },
     { id: 'buyer-notifications', title: 'Notifications', spec: 'S13', role: 'buyer', group: 'Buyer', status: 'new', states: ['default', 'empty'], Component: BuyerNotifications },
     { id: 'buyer-account', title: 'Account', spec: 'F02', role: 'buyer', group: 'Buyer', status: 'new', Component: BuyerAccount },
+    { id: 'add-role', title: 'Add another role', spec: 'F02 R2 · BR-ACC-02', role: 'buyer', group: 'Account and onboarding', status: 'new', states: ['choose', 'farmer added'], Component: AddRole },
     // Admin
     { id: 'admin-login', title: 'Admin sign in (2-step)', spec: 'F19', role: 'admin', group: 'Admin console', status: 'new', states: ['password', '2-step code'], Component: AdminLogin },
     { id: 'admin-overview', title: 'Admin overview', spec: 'F19', role: 'admin', group: 'Admin console', status: 'new', Component: AdminOverview },

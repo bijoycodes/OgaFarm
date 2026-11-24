@@ -12,7 +12,7 @@ Every version of the prototype (`versions/v1-mvp`, `v2-…`) follows these rules
 | Palette | Agriculture: earth green #15803D + harvest gold #A16207 | Same family, **softened** (below) | Client asked for soft colours |
 | Type | Lora + Raleway | **Lora** headings + **Nunito Sans** body | Raleway's old-style numbers make prices hard to read; Nunito Sans is the body font of the skill's "Soft Rounded" pairing |
 | Icons | Phosphor (`@phosphor-icons/react`) | Same, regular weight | Skill default; one consistent family |
-| Motion | Subtle (300–400 ms fade, small rise) | One 320 ms screen fade, 150 ms press feedback | Low bandwidth; switched off for reduced motion |
+| Motion | Subtle (300–400 ms fade, small rise) | Full motion system (see Motion below) | Smooth and quick; switched off for reduced motion |
 | Density | Standard | 4/8 px spacing scale, 44–48 px touch targets | Mobile-first |
 
 ## Colour (light; dark pairs in tokens.css)
@@ -39,6 +39,14 @@ Every version of the prototype (`versions/v1-mvp`, `v2-…`) follows these rules
 - Radius (reduced on client feedback): 6 / 8 / 12 px (`--r-sm/md/lg`). Buttons, inputs, chips, tabs and nav links use 8 px (`--r-ctl`), not pills. Only avatars and dots are round.
 - Organic blob shapes behind the hero, storefront cover, sign-in pages, empty states and photo placeholders.
 - Shadows: three soft levels (`--shadow-1/2/3`), green-tinted.
+
+## Motion (src/shared/styles/motion.css)
+- **Speed:** calm, 220–700 ms (slowed to about 1.6× the first version after review), transform and opacity only (smooth on low-end phones). Small overshoot only for "pop" moments (codes, ticks, active tab).
+- **Screen change:** the screen fades in; its sections rise 12 px one after another (70 ms apart); grid and list items follow the same way (first 8).
+- **Feedback:** every button, chip, tab and card blends colour changes; tap scales to 97 %; on mouse/trackpad, buttons lift 1 px and cards lift 3 px with a soft shadow, product photos zoom 5 %.
+- **Opening:** popups and menus drop in; filter sections slide open; the phone menu slides in from the right with its links following; dialogs and toasts spring in.
+- **Status:** timeline steps and checklist ticks pop in order; the current step pulses softly; dashboard numbers count up from zero; photos fade in once loaded.
+- **Reduce motion:** everything above is switched off when the device asks for reduced motion.
 
 ## Rules we checked (skill pre-delivery list)
 - No emoji as icons; one icon family; decorative icons hidden from screen readers.

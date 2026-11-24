@@ -4,6 +4,7 @@ import './shared/styles/tokens.css';
 import './shared/styles/base.css';
 import './shared/styles/components.css';
 import './shared/styles/layouts.css';
+import './shared/styles/motion.css';
 import { ProtoApp } from './app/ProtoApp';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><ProtoApp /></StrictMode>);

@@ -71,7 +71,8 @@ export const Skel = ({ h = 14, w = '100%', r }: { h?: number | string; w?: numbe
 
 export const Photo = ({ p, tag, pos }: { p: Pick<Product, 'kind' | 'icon' | 'name' | 'img'>; tag?: ReactNode; pos?: string }) =>
   <div className={`ph ${p.kind} ${p.img ? 'has-img' : ''}`}>
-    {p.img ? <img src={p.img} alt={p.name} loading="lazy" decoding="async" style={pos ? { objectPosition: pos } : undefined} /> : <><Icon name={p.icon} /><span className="sr">Photo of {p.name}</span></>}
+    {p.img ? <img src={p.img} alt={p.name} loading="lazy" decoding="async" style={pos ? { objectPosition: pos } : undefined}
+      ref={el => { if (el?.complete) el.classList.add('is-loaded'); }} onLoad={e => e.currentTarget.classList.add('is-loaded')} /> : <><Icon name={p.icon} /><span className="sr">Photo of {p.name}</span></>}
     {tag && <span className="tag">{tag}</span>}
   </div>;
 
@@ -177,5 +178,28 @@ export function Switch({ label, on = false, onText, offText, disabled, onChange 
       <span className="sw-text"><b>{label}</b>{(v ? onText : offText) && <span className="xs muted">{v ? onText : offText}</span>}</span>
       <span className="sw-track" aria-hidden="true"><span className="sw-thumb" /></span>
     </button>
+  );
+}
+
+/** Password with show/hide. `strength` shows a 4-step meter and the rule for new passwords. */
+export function PasswordInput({ defaultValue = '', autoComplete, strength, id, invalid }:
+  { defaultValue?: string; autoComplete: 'current-password' | 'new-password'; strength?: boolean; id?: string; invalid?: boolean }) {
+  const [show, setShow] = useState(false);
+  const [val, setVal] = useState(defaultValue);
+  const score = [val.length >= 8, /[a-z]/i.test(val) && /\d/.test(val), val.length >= 12, /[^a-z0-9]/i.test(val)].filter(Boolean).length;
+  const words = ['Too short', 'Weak', 'Okay', 'Good', 'Strong'];
+  return (
+    <>
+      <div className={`input-group pw-group ${invalid ? 'is-error' : ''}`}>
+        <input id={id} className="input" type={show ? 'text' : 'password'} autoComplete={autoComplete} value={val} onChange={e => setVal(e.target.value)} required aria-invalid={invalid || undefined} />
+        <button type="button" className="icon-btn" aria-label={show ? 'Hide password' : 'Show password'} aria-pressed={show} onClick={e => { e.preventDefault(); setShow(v => !v); }}><Icon name={show ? 'eyeOff' : 'eye'} /></button>
+      </div>
+      {strength && (
+        <span className="pw-meter" aria-live="polite">
+          <span className="pw-bars" aria-hidden="true">{[1, 2, 3, 4].map(i => <span key={i} className={i <= score ? `on s${score}` : ''} />)}</span>
+          <span className="xs"><b>{val ? words[score] : ' '}</b>{val && ' · '}<span className="muted">At least 8 characters, with letters and numbers.</span></span>
+        </span>
+      )}
+    </>
   );
 }

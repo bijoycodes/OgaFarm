@@ -49,7 +49,7 @@ OgaFarm connects Nigerian **farmers** and **farm-input suppliers** directly with
 | Consultant | Free, after verification | Offer expert advice (crops, livestock, vet, soil, business) |
 | Admin (your team) | Internal | Verify users, handle payments, problems and settings |
 
-One person can hold more than one role (for example a farmer who is also a buyer).
+Everyone signs up with **one role**. Later they can **add more roles** (for example a farmer who also buys, or a buyer who becomes a transporter) and **switch between them** from the role menu in the app.
 
 ---
 
@@ -66,7 +66,7 @@ Please check these carefully. They shape how the whole system works.
 | 3.5 | **Verification before selling:** a farmer's storefront goes live only **after your team approves their documents** |
 | 3.6 | **When a plan ends:** the storefront stays visible for a few extra days (grace period). **Admin sets the number of days** (default 7). After that it is hidden, never deleted, until the farmer renews |
 | 3.7 | **Early renewal:** the new period starts when the current one ends, so no paid day is lost |
-| 3.8 | **Codes by email only:** sign-up and sign-in codes are sent **by email**, not by SMS. Phone numbers are kept as contact details |
+| 3.8 | **Email and password:** users sign in with their email and password. A code is sent **by email** only once at sign-up (to confirm the email) and when resetting a password, never by SMS. Phone numbers are kept as contact details |
 | 3.9 | **Currency:** Naira (₦) only, including for diaspora buyers |
 | 3.10 | **Language:** English at launch |
 | 3.11 | **Launch area:** all of Nigeria at once (no pilot area) |
@@ -104,10 +104,15 @@ We build OgaFarm **in small releases**, not all at once. After each release you 
 - Visitors can browse without an account. Buying, applying or posting needs sign-in.
 
 ### 5.2 Sign up and sign in
-- Sign up with **email** (required) and phone number (contact only). The email is confirmed with a **6-digit code sent by email**.
+- Sign up with **email** (required) and phone number (contact only). The phone field has a country picker: Nigeria (+234) is the default, and other countries can be chosen (for example for buyers abroad). You also **create a password**. The email is confirmed **once** with a **6-digit code sent by email**.
 - Choose a user type at sign-up.
-- Sign in with a code sent to your email.
+- **Sign in with your email and password** (with show/hide and *Keep me signed in*). No code is needed each time you sign in.
+- **Forgot password:** we email a code, and you choose a new password.
 - If someone opens a shared product link and needs to sign in, they return to that product afterwards.
+- **One role at sign-up, more later:** the account starts with the role chosen at sign-up.
+- **Role menu:** shows the current role (on the account card in the sidebar on a computer, or a role button at the top on a phone). Tap it to switch to another role you have, or choose **Add another role**.
+- **Adding a role:** free roles like Buyer start straight away. Transporter needs verification. Paid roles like Farmer need their own plan and verification. Adding a role never changes the plan of another role.
+- Each role keeps its own orders, listings and notifications, and the menu shows unread notifications for each role.
 
 ### 5.3 Verification
 - Each user type has its own checklist of documents.

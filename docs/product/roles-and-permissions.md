@@ -20,7 +20,12 @@ Part of the [PRD](prd-summary.md). The server enforces every permission below. H
 | Benefits Partner (P2) | `partner` | Membership fee | Business verification, paid membership, approved offer | Publishing offers, redeeming codes |
 | Admin | `admin.*` | Internal | Staff account with MFA | — |
 
-**Multi-role.** One user (one verified owner identity) may hold several roles, e.g. farmer + business buyer, or job seeker + consultant. Each role is activated separately. The verified owner identity is what verification and fraud checks attach to.
+**Multi-role.** One user (one verified owner identity) may hold several roles, e.g. farmer + business buyer, or job seeker + consultant. The verified owner identity is what verification and fraud checks attach to.
+- **Sign-up creates one role.** The user picks it on the sign-up screen.
+- **Add a role later:** from the role menu → *Add another role*. Each role is activated separately and must meet the requirements in the table above (free roles at once or after their own verification; paid roles with their own plan and verification).
+- **Switch roles:** the role menu (sidebar account card on desktop, role button in the top bar on mobile) lists every role the user holds. One role is active at a time; permissions are checked against the active role on the server.
+- **Admin accounts** are separate and never hold marketplace roles.
+- Binding rules: business-rules.md **BR-ACC-01…08**.
 
 **Buyer sub-types.** Business, individual, group and diaspora buyers share one buyer capability set. The sub-type controls form fields (business type, recipient details) and dashboard emphasis.
 

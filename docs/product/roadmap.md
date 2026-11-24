@@ -68,8 +68,9 @@ Part of the [PRD](prd-summary.md). Machine-readable backlog for the agent loop: 
 ### Auth & accounts
 | ID | Story | Key acceptance | Refs |
 |---|---|---|---|
-| I1-01 | Registration with email code verification and consent | 6-digit code sent by email verifies the account (no SMS); phone stored as contact only; consent stored with policy version; marketing opt-in separate; rate limits; email sending behind an interface with a log driver | F02, BR-NOT-06, BR-NOT-02 |
-| I1-02 | Login, sessions and role assignment | Web cookie session, mobile secure token; farmer and buyer roles checked server-side | F02 |
+| I1-01 | Registration with password, one-time email confirmation and consent | Password with strength rules; 6-digit code sent by email confirms the address once (no SMS); phone stored as contact only; consent stored with policy version; marketing opt-in separate; rate limits; email sending behind an interface with a log driver | F02, BR-NOT-06, BR-NOT-02 |
+| I1-02 | Login with email and password, sessions, password reset, role assignment | Email + password (hashed, rate limit, short lockout); Keep me signed in; Forgot password by email code; web cookie session, mobile secure token; roles checked server-side | F02 R6, BR-ACC-09, 10 |
+| I1-02a | Role menu: switch role and add another role | Sign-up creates one role; role menu shows held roles with unread counts; switching keeps the session; Add another role starts that role's own onboarding (plan and verification for paid roles) | F02 R2/R2a, BR-ACC-01…05 |
 | I1-03 | Preserve the deep-link destination through signup and login | User returns to the same page and action on web and mobile | BR-SHR-02, R12 |
 
 ### Subscriptions

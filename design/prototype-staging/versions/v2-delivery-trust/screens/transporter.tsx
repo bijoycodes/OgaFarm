@@ -1,4 +1,5 @@
 /* v2 · Transporter: sign up with vehicle and documents, dashboard, delivery requests, quote, job with proof of delivery, public profile */
+import { PhoneInput } from '@shared/ui/PhoneInput';
 import { Icon } from '@shared/ui/Icon';
 import { Btn, Clickable, Status, Alert, Empty, Field, Upload, Steps, Kv, Badge, Verified, Chips, Timeline, Switch } from '@shared/ui/ui';
 import { AppShell, PublicShell } from '@shared/layout/shells';
@@ -38,7 +39,7 @@ export function TransporterSignup({ state }: { state: string }) {
             <fieldset className="card stack"><legend><h3>Your details</h3></legend><div className="form-grid">
               <Field label="Full name, exactly as on your ID" required hint="It must match your driver's licence or National ID."><input className="input" defaultValue="Sunday Ikechukwu Ike" autoComplete="name" required /></Field>
               <Field label="Name customers will see" hint="Your business name, or your own name."><input className="input" defaultValue="Ike Haulage" /></Field>
-              <Field label="Phone number" required hint="Shared with a customer only after you are assigned to their delivery."><div className="input-group"><span>+234</span><input className="input" type="tel" inputMode="tel" autoComplete="tel-national" defaultValue="802 441 9087" required /></div></Field>
+              <Field label="Phone number" required hint="Shared with a customer only after you are assigned to their delivery."><PhoneInput defaultValue="802 441 9087" required /></Field>
               <Field label="Where you are based" required><input className="input" defaultValue="Issele-Uku, Delta" required /></Field>
             </div></fieldset>
             <fieldset className="card stack"><legend><h3>Vehicle</h3></legend>

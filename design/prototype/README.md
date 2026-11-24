@@ -13,7 +13,7 @@ The screens are organised by release, one folder per version, matching `docs/pro
 
 | Version | Folder | Roadmap | Status |
 |---|---|---|---|
-| V1 · MVP: Farmer sells, buyer buys | `versions/v1-mvp` | I1 | **Built** (33 screens) |
+| V1 · MVP: Farmer sells, buyer buys | `versions/v1-mvp` | I1 | **Built** (35 screens) |
 | V2 · Delivery and trust | `versions/v2-delivery-trust` | I2 | **Built** (17 new, 3 updated) |
 | V3 · Suppliers and business buying | `versions/v3-suppliers-b2b` | I3 | Planned |
 | V4 · Group buying and rescue produce | `versions/v4-group-rescue` | I4 | Planned |

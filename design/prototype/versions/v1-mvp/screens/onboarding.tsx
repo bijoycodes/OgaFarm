@@ -1,35 +1,44 @@
 /* v1 · Sign up, email code check, sign in, plan, payment and verification */
+import { PhoneInput } from '@shared/ui/PhoneInput';
 import type { ReactNode } from 'react';
 import { Icon } from '@shared/ui/Icon';
-import { Btn, Clickable, Alert, Proposal, Field, Upload, Steps, Kv, Badge } from '@shared/ui/ui';
+import { useState } from 'react';
+import { useProto } from '@app/context';
+import { RolePicker } from '@shared/ui/RolePicker';
+import { roleDef, type RoleKey } from '@shared/data/roles';
+import { Btn, Clickable, Alert, Proposal, Field, Upload, Steps, Kv, Badge, PasswordInput } from '@shared/ui/ui';
 import { PublicShell } from '@shared/layout/shells';
 import { Plans } from '@shared/blocks';
 import { naira } from '@shared/data/sample';
+
+/* Sign-up creates one role (BR-ACC-01). The choice decides where the email-code step continues. */
+const signupRole = (): RoleKey => { try { return (sessionStorage.getItem('oga-signup-role') as RoleKey) || 'buyer'; } catch { return 'buyer'; } };
+const setSignupRole = (r: RoleKey) => { try { sessionStorage.setItem('oga-signup-role', r); } catch { /* storage blocked */ } };
 
 const Auth = ({ children }: { children: ReactNode }) => <PublicShell noFooter><div className="auth">{children}</div></PublicShell>;
 const linkStyle = { background: 'none', border: 0, padding: '10px 4px', margin: '-10px 0', color: 'var(--primary-ink)', cursor: 'pointer', textDecoration: 'underline', fontWeight: 700 } as const;
 
 export function Signup({ state }: { state: string }) {
   const bad = state === 'error';
+  const v = Number(useProto().version.slice(1));
+  const [role, setRole] = useState<RoleKey>(() => { const r = signupRole(); return roleDef(r).since <= v ? r : 'buyer'; });
   return (
     <Auth>
       <form className="card stack-lg" onSubmit={e => e.preventDefault()}>
-        <div><h2>Create your account</h2><p className="small muted">Takes about a minute. We will email you a 6-digit code.</p></div>
+        <div><h2>Create your account</h2><p className="small muted">Takes about a minute. We email you a code once, to confirm your address.</p></div>
         {bad && <div className="error-summary" role="alert" tabIndex={-1}><h3>There is a problem</h3><a href="#signup-email" onClick={e => { e.preventDefault(); document.getElementById('signup-email')?.focus(); }}>Enter a full email address</a></div>}
-        <div className="field"><span>I want to</span><div className="g2">
-          <label className="choice"><input type="radio" name="r" defaultChecked aria-label="Sell" /><b>Sell</b><span className="xs muted">Farmer · paid plan</span></label>
-          <label className="choice"><input type="radio" name="r" aria-label="Buy" /><b>Buy</b><span className="xs muted">Buyer · free</span></label>
-        </div></div>
+        <RolePicker value={role} version={v} onChange={k => { setRole(k); setSignupRole(k); }} />
         <Field label="Full name" required><input className="input" defaultValue="Emeka Okafor" autoComplete="name" required /></Field>
         <Field label="Email address" required error={bad ? 'Enter a full email address, for example emeka@example.com.' : undefined}>
           <input className={`input ${bad ? 'is-error' : ''}`} type="email" id="signup-email" defaultValue={bad ? 'emeka.okafor@' : 'emeka.okafor@example.com'} inputMode="email" autoComplete="email" required aria-invalid={bad || undefined} />
         </Field>
-        <Field label="Phone number" hint="So buyers can call you about orders. We never send codes to your phone."><div className="input-group"><span>+234</span><input className="input" defaultValue="803 123 4567" inputMode="tel" type="tel" autoComplete="tel-national" /></div></Field>
+        <Field label="Phone number" hint="So buyers can call you about orders. We never send codes to your phone."><PhoneInput defaultValue="803 123 4567" /></Field>
+        <Field label="Create a password" required><PasswordInput defaultValue="farmfresh2026" autoComplete="new-password" strength /></Field>
         <div className="stack" style={{ gap: 10 }}>
           <label className="check"><input type="checkbox" defaultChecked />I agree to the Terms and Privacy Policy.</label>
           <label className="check"><input type="checkbox" />Send me offers and farm updates by SMS or WhatsApp (optional).</label>
         </div>
-        <Btn block to="verify-email">Email me a code</Btn>
+        <Btn block to="verify-email">Create account</Btn>
         <p className="small muted" style={{ textAlign: 'center' }}>Already have an account? <Clickable to="signin" style={linkStyle}>Sign in</Clickable></p>
       </form>
     </Auth>
@@ -42,24 +51,55 @@ export function VerifyEmail({ state }: { state: string }) {
     <Auth>
       <form className="card stack-lg" onSubmit={e => e.preventDefault()} style={{ textAlign: 'center' }}>
         <span className="em-ic" style={{ margin: '0 auto' }}><Icon name="mail" /></span>
-        <div><h2>Check your email</h2><p className="small muted">Enter the 6-digit code we sent to emeka.okafor@example.com · <Clickable to="signup" style={linkStyle}>Change</Clickable></p></div>
+        <div><h2>Confirm your email</h2><p className="small muted">Enter the 6-digit code we sent to emeka.okafor@example.com · <Clickable to="signup" style={linkStyle}>Change</Clickable></p><p className="xs muted" style={{ marginTop: 6 }}>We only ask once. After this you sign in with your email and password.</p></div>
         <div className="code-boxes">{'482193'.split('').map((d, i) => <input key={i} defaultValue={wrong || i < 4 ? d : ''} aria-label={`Digit ${i + 1}`} inputMode="numeric" autoComplete={i === 0 ? 'one-time-code' : 'off'} maxLength={1} />)}</div>
         {wrong && <div style={{ textAlign: 'left' }}><Alert tone="danger" icon="alert">That code is not right. Check the latest email from OgaFarm and try again. 2 tries left.</Alert></div>}
-        <Btn block to="choose-plan">Verify and continue</Btn>
+        <Btn block to={roleDef(signupRole()).next ?? 'choose-plan'}>Confirm and continue</Btn>
         <p className="small muted">Not there? Check your spam folder. Resend code in <b className="num">0:42</b></p>
       </form>
     </Auth>
   );
 }
 
-export function Signin() {
+export function Signin({ state }: { state: string }) {
+  const wrong = state === 'wrong password';
   return (
     <Auth>
       <form className="card stack-lg" onSubmit={e => e.preventDefault()}>
-        <div><h2>Welcome back</h2><p className="small muted">Sign in with your email. We will email you a 6-digit code.</p></div>
-        <Field label="Email address" required><input className="input" type="email" defaultValue="emeka.okafor@example.com" inputMode="email" autoComplete="email" required /></Field>
-        <Btn block to="verify-email">Email me a code</Btn>
+        <div><h2>Welcome back</h2><p className="small muted">Sign in with your email and password.</p></div>
+        {wrong && <Alert tone="danger" icon="alert">That email and password don't match. Check them and try again, or reset your password. 3 tries left before a short pause.</Alert>}
+        <Field label="Email address" required><input className="input" type="email" defaultValue="emeka.okafor@example.com" inputMode="email" autoComplete="username" required /></Field>
+        <div className="field">
+          <span className="row-between"><span>Password<span className="req" aria-hidden="true">*</span></span><Clickable to="forgot-password" style={linkStyle}>Forgot password?</Clickable></span>
+          <PasswordInput defaultValue={wrong ? 'farmfresh' : 'farmfresh2026'} autoComplete="current-password" invalid={wrong} />
+        </div>
+        <label className="check"><input type="checkbox" defaultChecked />Keep me signed in on this device</label>
+        <Btn block to="product">Sign in</Btn>
         <Alert tone="info" icon="info">You were opening <b style={{ display: 'inline', fontSize: 'inherit' }}>Fresh tomatoes (Roma)</b>. We will take you back there after you sign in.</Alert>
+        <p className="small muted" style={{ textAlign: 'center' }}>New to OgaFarm? <Clickable to="signup" style={linkStyle}>Create an account</Clickable></p>
+      </form>
+    </Auth>
+  );
+}
+
+/* Forgot password: the email code is used here (and once at sign-up), never at every sign-in. */
+export function ForgotPassword({ state }: { state: string }) {
+  const reset = state === 'reset';
+  return (
+    <Auth>
+      <form className="card stack-lg" onSubmit={e => e.preventDefault()}>
+        {reset ? <>
+          <div><h2>Set a new password</h2><p className="small muted">Enter the 6-digit code we sent to emeka.okafor@example.com, then choose a new password.</p></div>
+          <div className="field"><span>Code from your email</span><div className="code-boxes">{'615204'.split('').map((d, i) => <input key={i} defaultValue={i < 6 ? d : ''} aria-label={`Digit ${i + 1}`} inputMode="numeric" autoComplete={i === 0 ? 'one-time-code' : 'off'} maxLength={1} />)}</div></div>
+          <Field label="New password" required><PasswordInput defaultValue="" autoComplete="new-password" strength /></Field>
+          <Btn block to="signin">Save new password</Btn>
+          <p className="xs muted">For your safety, you will be signed out on other devices.</p>
+        </> : <>
+          <div><h2>Reset your password</h2><p className="small muted">Enter your account email. We will send you a code to set a new password.</p></div>
+          <Field label="Email address" required><input className="input" type="email" defaultValue="emeka.okafor@example.com" inputMode="email" autoComplete="email" required /></Field>
+          <Btn block state="reset">Email me a reset code</Btn>
+          <p className="small muted" style={{ textAlign: 'center' }}>Remembered it? <Clickable to="signin" style={linkStyle}>Back to sign in</Clickable></p>
+        </>}
       </form>
     </Auth>
   );

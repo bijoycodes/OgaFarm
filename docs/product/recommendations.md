@@ -39,7 +39,7 @@ Each recommendation has the same layout:
 | 11 | A 7-day grace period after a subscription ends | Business | Fewer lost farmers over a late payment |
 | 12 | Buyer payments go straight to the seller through the gateway's split payments | Business | OgaFarm never holds other people's money, so there is less legal and financial risk |
 | 13 | Full payment at checkout for v1; deposits and pay-on-delivery later | Business | Simpler, safer first release |
-| 14 | In-app and push notifications first; sign-up and sign-in codes by email; SMS only for urgent alerts | Business | Much lower running costs |
+| 14 | In-app and push notifications first; one-time email confirmation and password reset by email; SMS only for urgent alerts | Business | Much lower running costs |
 | 15 | Low-data design from day one; full offline mode later | Business | Works on weak networks without the high cost of offline sync |
 | 16 | AI assistants after launch, once real data exists | Business | Avoids an assistant that guesses prices or stock |
 | 17 | Group-buy size limit set by admin (start smaller, raise it as needed) | Business | Protects fulfilment while the system proves itself |
@@ -188,7 +188,7 @@ Each recommendation has the same layout:
 
 ### 14. In-app and push notifications first; codes by email
 - **Today:** SMS, WhatsApp and email are listed as channels.
-- **We recommend:** in-app and phone push notifications (free) for everyday updates. Sign-up and sign-in codes go by email, as you decided, so no SMS is needed for verification. SMS only for urgent alerts if ever needed, and WhatsApp at launch (I6), both opt-in.
+- **We recommend:** in-app and phone push notifications (free) for everyday updates. The one-time email confirmation and password-reset codes go by email, as you decided, so no SMS is needed for verification. SMS only for urgent alerts if ever needed, and WhatsApp at launch (I6), both opt-in.
 - **Why it is better for you:** SMS and WhatsApp messages cost money every time they are sent. This keeps running costs low as the user base grows.
 - **Trade-off:** users who do not open the app may see updates later.
 - **Your decision:** approve this channel plan.

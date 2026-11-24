@@ -1,4 +1,5 @@
 /* v2 · Buyer: checkout with delivery, compare delivery quotes, order tracking, receive and inspect, dispute, review */
+import { PhoneInput } from '@shared/ui/PhoneInput';
 import { Icon } from '@shared/ui/Icon';
 import { Btn, Status, Alert, Empty, Photo, Stepper, Field, Kv, Badge, Verified, Timeline, Upload, Chips } from '@shared/ui/ui';
 import { AppShell } from '@shared/layout/shells';
@@ -28,7 +29,7 @@ export function Checkout({ state }: { state: string }) {
           {delivery ? (
             <div className="card stack"><h3>Deliver to</h3><div className="form-grid">
               <Field label="Recipient name" required><input className="input" defaultValue="Ngozi Eze" autoComplete="name" required /></Field>
-              <Field label="Recipient phone" required hint="Shared with the transporter after you accept a quote."><div className="input-group"><span>+234</span><input className="input" type="tel" inputMode="tel" defaultValue="806 555 0142" required /></div></Field>
+              <Field label="Recipient phone" required hint="Shared with the transporter after you accept a quote."><PhoneInput defaultValue="806 555 0142" required label="Recipient phone" /></Field>
               <Field label="Address" required full><input className="input" defaultValue="14 Okpanam Road, Asaba" autoComplete="street-address" required /></Field>
               <Field label="Landmark" hint="Helps the driver find you."><input className="input" defaultValue="Near Shoprite" /></Field>
               <Field label="Deliver by"><select className="select"><option>Today, before 4 pm</option><option>Tomorrow</option><option>Flexible</option></select></Field>
@@ -36,7 +37,7 @@ export function Checkout({ state }: { state: string }) {
           ) : (
             <div className="card"><div className="form-grid">
               <Field label="Your name"><input className="input" defaultValue="Ngozi Eze" /></Field>
-              <Field label="Phone"><div className="input-group"><span>+234</span><input className="input" defaultValue="806 555 0142" /></div></Field>
+              <Field label="Phone"><PhoneInput defaultValue="806 555 0142" label="Phone" /></Field>
             </div></div>
           )}
         </div>

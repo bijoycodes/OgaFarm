@@ -153,12 +153,13 @@ Each feature lists its requirements (**R**) and acceptance references. Binding r
 - R6 States: loading skeleton, network failure, no content, mobile menu.
 
 ### F02 Accounts, authentication and multi-role (P0)
-- R1 Register with email (required) and phone number (contact only). The email address is verified with a 6-digit code sent **by email**. No SMS or phone codes are used anywhere. Record consent (terms, privacy, optional marketing).
-- R2 Choose an account type at signup. One user may hold several permitted roles. The server enforces role entitlements.
+- R1 Register with email (required) and phone number (contact only). The phone field has a country picker: Nigeria (+234) is the default, and international numbers are allowed (for example diaspora buyers and recipients); numbers are stored in international format. The user creates a **password** (at least 8 characters, with letters and numbers; strength shown). The email address is confirmed **once** with a 6-digit code sent **by email**. No SMS or phone codes are used anywhere. Record consent (terms, privacy, optional marketing).
+- R2 Sign-up creates the account with **one role** (the user picks it). Later the user can **add more roles** (for example a farmer who also buys, or a buyer who becomes a transporter) from the role menu. Each added role meets its own requirements: free roles like buyer start at once; transporter and consultant need verification; paid roles need their own plan and verification (BR-ACC-01, 02, 06).
+- R2a **Role menu:** in the signed-in app (account card in the sidebar on desktop, role button in the top bar on mobile) the user sees the active role, switches to any other role they hold, and opens **Add another role**. Switching changes dashboard and navigation without signing out; the app reopens in the last role used; each role shows its own unread count (BR-ACC-03…05).
 - R3 Paid roles go to plan selection before activation (F04). Free roles go straight to onboarding.
 - R4 A deep link's destination is preserved through signup and login.
 - R5 Profile and business details: name, business or farm name, locality, phone, optional logo, cover and bio.
-- R6 Sign in with email: a 6-digit code is sent to the registered email address. Rate limits on registration, sign-in and email codes. Bot protection on signup.
+- R6 Sign in with **email and password**, with show/hide and *Keep me signed in* on the user's device. No code is asked at sign-in: the email code is used only once at sign-up (to confirm the address) and for **Forgot password** (code by email, then a new password; other sessions are signed out). Passwords are stored hashed; repeated wrong passwords trigger a short pause; rate limits on registration, sign-in and reset codes; bot protection on sign-up (BR-ACC-09, 10).
 
 ### F03 Verification (P0)
 - R1 Each role has its own verification checklist (see roles doc). Verification status shows on profiles only when it is real.
@@ -343,7 +344,7 @@ Each feature lists its requirements (**R**) and acceptance references. Binding r
 |---|---|
 | Performance | Public pages: LCP < 2.5 s on a mid-range Android over 3G. Images compressed and responsive (WebP/AVIF). API p95 < 500 ms for reads |
 | Availability | Target 99.5% monthly for the API and public web |
-| Security | HTTPS everywhere. Server-side RBAC and object-level authorisation on every endpoint. Admin MFA. Rate limits on sign-up, sign-in and email codes. No secrets in clients or the repo. OWASP ASVS L2 as the baseline |
+| Security | HTTPS everywhere. Server-side RBAC and object-level authorisation on every endpoint. Admin MFA. Passwords hashed (modern adaptive hash), rate limits and short lockout on sign-in, and rate limits on email codes. No secrets in clients or the repo. OWASP ASVS L2 as the baseline |
 | Payments | Signed webhooks, replay protection, idempotency keys, unique provider event IDs, daily reconciliation |
 | Concurrency | Atomic stock reservation. Unique constraints on payment events. Locked group-funding updates |
 | Privacy | Compliance with the NDPA 2023 (Nigeria Data Protection Act). Consent records. Data minimisation. Private documents in encrypted storage with signed URLs. Retention and deletion policy |
@@ -361,7 +362,7 @@ Each feature lists its requirements (**R**) and acceptance references. Binding r
 | Payment gateway (NGN) | Subscriptions, orders, group shares, refunds | Provider to be confirmed (Q2). Recommended: Paystack, with Flutterwave as the alternative |
 | SMS | Optional urgent alerts only (never used for verification) | Later, opt-in. Provider to be confirmed (Q4) |
 | WhatsApp Business Platform | Opt-in notifications | Phase 3, consent required |
-| Email | Account verification and sign-in codes, receipts, transactional email | **Required from I1.** Provider to be confirmed (Q4) |
+| Email | One-time email confirmation at sign-up, password-reset codes, receipts, transactional email | **Required from I1.** Provider to be confirmed (Q4) |
 | Push | Expo push notifications (FCM/APNs) | Mobile |
 | Maps / geocoding | Distance matching, market pins | Provider to be confirmed. Text location in v1, geocoding when available |
 | Object storage | Media and private documents | S3-compatible |
@@ -388,7 +389,8 @@ The prototype stores everything in the browser (localStorage, IndexedDB), has no
 | D10 | Group size | Minimum 4, conceptual maximum 1,000,000 | PDF + prototype |
 | D11 | Transport pricing | Farmers never set transport prices. Transporters quote and buyers accept. Transport is always a separate line | Prototype |
 | D12 | Job seeker privacy | Anonymous matching. Contact is released only with the applicant's approval | Prototype |
-| D13 | Account verification | Verification and sign-in codes are sent by email only, never by SMS. Phone numbers are kept as contact details | Client decision, 23 Nov 2026 |
+| D13 | Account verification | Codes are sent by email only, never by SMS. Phone numbers are kept as contact details | Client decision, 23 Nov 2026 |
+| D25 | Sign-in | Users sign in with **email and password**. The email code is used once at sign-up to confirm the address, and for password reset, never at every sign-in. Admin staff keep 2-step sign-in | Team decision, 24 Nov 2026 |
 | D14 | Plan prices | All plan prices are **editable by admin**. Defaults for demo and development: Quarterly ₦30,000, Half-yearly ₦54,000, Annual ₦95,000 | Team decision, 23 Nov 2026 |
 | D15 | Commission | **No commission** on sales. OgaFarm earns from subscriptions only | Team decision, 23 Nov 2026 (part of Q3) |
 | D16 | Draft before pay | Farmers can build their storefront and add products **for free as a draft**. Paying publishes it (recommendation #9 approved) | Team decision, 23 Nov 2026 |
@@ -399,6 +401,7 @@ The prototype stores everything in the browser (localStorage, IndexedDB), has no
 | D21 | Languages | English only at launch | Team decision, 23 Nov 2026 (answers Q7) |
 | D22 | Currency | Naira (NGN) only, including diaspora buyers | Team decision, 23 Nov 2026 (answers Q12) |
 | D23 | Product name | **OgaFarm** is the product name; the website is farmoga.com | Team decision, 23 Nov 2026 |
+| D24 | Roles per account | Sign-up creates one role. More roles are added later from the role menu, and the user switches between them in the app (BR-ACC) | Team decision, 24 Nov 2026 |
 
 ## 12. Open questions for the client
 

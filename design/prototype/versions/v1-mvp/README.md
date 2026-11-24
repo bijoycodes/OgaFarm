@@ -8,7 +8,7 @@ A farmer signs up, pays for a plan, gets verified, builds a storefront and share
 
 Delivery, suppliers, group buying, jobs and markets are not in this version. Buttons for them show a "coming in vN" message.
 
-## Screens (33)
+## Screens (35)
 | Group | Screens |
 |---|---|
 | Public pages | Landing and role selection · Pricing · Marketplace browse (loading, empty, error) · Public farm storefront · Product detail (sold out) · Unavailable link |
@@ -23,3 +23,6 @@ Screens carry a gold "Proposed change" note where client recommendations #9 (set
 ## Files
 - `index.ts`: the list of screens in this version (name, spec reference, role, states)
 - `screens/public.tsx`, `onboarding.tsx`, `farmer.tsx`, `buyer.tsx`, `admin.tsx`: the screens
+
+## Accounts with more than one role
+Sign-up creates one role. The **role menu** (account card at the bottom of the sidebar on desktop, role button in the top bar on mobile) switches between the roles an account holds and opens **Add another role** (`add-role`). Rules: business-rules.md BR-ACC-01…08.

@@ -270,3 +270,23 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
 @container app (max-width: 900px) { .split.aside-first-m > aside { order: -1; } }
 /* Breadcrumb links: 44 px tall tap area without changing the visual size */
 .breadcrumb button { padding: 10px 4px; margin: -10px -4px; }
+
+/* Mobile menu (public pages): full-screen panel sliding in from the right */
+.menu-btn { position: static; }
+.mm-panel { position: absolute; top: 0; left: 0; right: 0; height: 100vh; z-index: 5; display: flex; flex-direction: column; background: var(--bg); animation: mm-slide 440ms var(--ease-out, cubic-bezier(.2, .8, .2, 1)); }
+.mm-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px var(--s-4); min-height: 61px; background: var(--card); border-bottom: 1px solid var(--line); }
+.mm-head .logo { cursor: default; }
+.mm-body { flex: 1; overflow-y: auto; padding: var(--s-4); display: flex; flex-direction: column; gap: 6px; }
+.mm-link { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 60px; padding: 8px 12px; border: 1px solid var(--line); background: var(--card); border-radius: var(--r-lg); font: inherit; font-size: var(--fs-md); font-weight: 700; color: var(--ink); text-align: left; cursor: pointer; }
+.mm-link:hover, .mm-link:focus-visible { border-color: var(--primary); }
+.mm-link[aria-current="page"] { background: var(--primary-soft); border-color: color-mix(in srgb, var(--primary) 40%, var(--line)); color: var(--primary-ink); }
+.mm-ic { width: 40px; height: 40px; border-radius: var(--r-md); display: grid; place-items: center; background: var(--sunken); color: var(--primary-ink); flex: none; }
+.mm-link[aria-current="page"] .mm-ic { background: var(--card); }
+.mm-ic .ic { width: 20px; height: 20px; }
+.mm-chev { width: 18px; height: 18px; color: var(--muted); }
+.mm-foot { padding: var(--s-4); padding-bottom: calc(var(--s-4) + env(safe-area-inset-bottom, 0px)); background: var(--card); border-top: 1px solid var(--line); }
+.mm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mm-actions .btn { width: 100%; }
+.mm-note { text-align: center; margin-top: 10px; }
+@keyframes mm-slide { from { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .mm-panel { animation: none; } }

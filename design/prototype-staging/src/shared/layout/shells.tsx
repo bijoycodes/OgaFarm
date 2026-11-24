@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Icon } from '../ui/Icon';
 import { Btn, IconBtn, Clickable, Badge, ThemeToggle } from '../ui/ui';
 import { useProto } from '@app/context';
+import { RoleMenu } from './RoleMenu';
 
 const ICON_SRC = './icon.png';
 
@@ -10,6 +11,7 @@ export const Logo = ({ to = 'landing' }: { to?: string }) =>
 
 /* ---------------- public pages ---------------- */
 const PUB_NAV: [string, string][] = [['marketplace', 'Browse produce'], ['soon:v3', 'Suppliers'], ['soon:v5', 'Jobs'], ['soon:v5', 'Markets'], ['pricing', 'Pricing']];
+const NAV_ICON: Record<string, string> = { 'Browse produce': 'search', Suppliers: 'seed', Jobs: 'briefcase', Markets: 'pin', Pricing: 'tag' };
 
 export function PublicShell({ active, url, noFooter, children }: { active?: string; url?: string; noFooter?: boolean; children: ReactNode }) {
   return (
@@ -24,12 +26,74 @@ export function PublicShell({ active, url, noFooter, children }: { active?: stri
           <ThemeToggle />
           <Btn variant="ghost" className="hide-m" to="signin">Sign in</Btn>
           <Btn size="sm" to="signup">Get started</Btn>
-          <span className="menu-btn"><IconBtn icon="menu" label="Menu" toast="Menu: Browse, Suppliers, Jobs, Markets, Pricing, Sign in" /></span>
+          <MobileMenu active={active} />
         </div>
       </header>
       <main>{children}</main>
       {!noFooter && <Footer />}
     </>
+  );
+}
+
+/* Mobile menu: a full-screen panel that slides in from the right. It covers the visible screen
+   (the header is sticky, so the panel is anchored to it and sized to the screen height).
+   Closes on a link, Escape or the X; the page behind does not scroll while it is open. */
+function MobileMenu({ active }: { active?: string }) {
+  const { go, version } = useProto();
+  const [open, setOpen] = useState(false);
+  const [h, setH] = useState<number>();
+  const ref = useRef<HTMLSpanElement>(null);
+  const v = Number(version.slice(1));
+  useEffect(() => {
+    if (!open) return;
+    const scroller = (ref.current?.closest('#device') as HTMLElement | null) ?? document.documentElement;
+    const prev = scroller.style.overflow;
+    // Height = from the top of the (sticky) header to the bottom of the visible screen
+    const size = () => {
+      const top = (ref.current?.closest('.pub-header') as HTMLElement | null)?.getBoundingClientRect().top ?? 0;
+      const bottom = scroller === document.documentElement ? window.innerHeight : scroller.getBoundingClientRect().top + scroller.clientTop + scroller.clientHeight;
+      setH(Math.round(bottom - top));
+    };
+    size(); scroller.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', onKey); window.addEventListener('resize', size);
+    (ref.current?.querySelector('.mm-close') as HTMLElement | null)?.focus();
+    return () => { scroller.style.overflow = prev; document.removeEventListener('keydown', onKey); window.removeEventListener('resize', size); };
+  }, [open]);
+  const close = () => { setOpen(false); setTimeout(() => (ref.current?.querySelector('.menu-toggle') as HTMLElement | null)?.focus(), 0); };
+  const nav = (to: string) => { setOpen(false); go(to); };
+  return (
+    <span className="menu-btn" ref={ref}>
+      <button type="button" className="icon-btn menu-toggle" aria-label="Open menu" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(true)}>
+        <Icon name="menu" />
+      </button>
+      {open && (
+        <div className="mm-panel" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" style={h ? { height: h } : undefined}>
+          <div className="mm-head">
+            <span className="logo"><img src={ICON_SRC} alt="" />OgaFarm</span>
+            <button type="button" className="icon-btn mm-close" aria-label="Close menu" onClick={close}><Icon name="close" /></button>
+          </div>
+          <nav className="mm-body" aria-label="Main">
+            {PUB_NAV.map(([to, label]) => {
+              const soonV = to.startsWith('soon:') ? Number(to.slice(6)) : 0;
+              return (
+                <button key={label} type="button" className="mm-link" aria-current={to === active ? 'page' : undefined} onClick={() => nav(to)}>
+                  <span className="mm-ic"><Icon name={NAV_ICON[label] ?? 'chev'} /></span><span className="grow">{label}</span>
+                  {soonV > v ? <Badge>Coming in V{soonV}</Badge> : <Icon name="chev" className="mm-chev" />}
+                </button>
+              );
+            })}
+          </nav>
+          <div className="mm-foot">
+            <div className="mm-actions">
+              <Btn variant="secondary" onClick={() => nav('signin')}>Sign in</Btn>
+              <Btn onClick={() => nav('signup')}>Get started</Btn>
+            </div>
+            <p className="xs muted mm-note">Buyers join free. Farmers choose a plan.</p>
+          </div>
+        </div>
+      )}
+    </span>
   );
 }
 
@@ -103,17 +167,19 @@ export function AppShell({ role, active, title, back, actions, children }:
           <Clickable key={it.to} className="side-link" to={it.to} current={it.to === active}><Icon name={it.icon} />{it.label}{it.count && <span className="count">{it.count}</span>}</Clickable>
         ))}
         <div className="side-foot">
-          <div className="row" style={{ gap: 10, flexWrap: 'nowrap' }}><span className="avatar">{who.i}</span><div className="grow"><b className="small">{who.n}</b><div className="xs muted">{who.s}</div></div></div>
+          {role === 'admin'
+            ? <div className="row" style={{ gap: 10, flexWrap: 'nowrap' }}><span className="avatar">{who.i}</span><div className="grow"><b className="small">{who.n}</b><div className="xs muted">{who.s}</div></div></div>
+            : <RoleMenu role={role} variant="side" />}
           {role === 'farmer' && <Badge tone="ok" icon="check">Annual plan · 8 months left</Badge>}
           {role === 'admin' && <Badge tone="info" icon="lock">Signed in with 2-step</Badge>}
           {role === 'transporter' && <Badge tone="ok" icon="shield">Verified transporter</Badge>}
         </div>
       </aside>
       <div className="main">
-        <div className="topbar">
+        <div className={`topbar ${role !== 'admin' && !back ? 'has-role' : ''}`}>
           {back ? <IconBtn icon="back" label="Back" to={back} /> : <img className="mobile-logo" src={ICON_SRC} alt="OgaFarm" />}
           <div className="title">{title}</div>
-          <div className="acts">{actions}<ThemeToggle /><IconBtn icon="bell" label="Notifications" dot to={who.notif} /></div>
+          <div className="acts">{actions}{role !== 'admin' && <span className="show-m"><RoleMenu role={role} variant="top" /></span>}<ThemeToggle /><IconBtn icon="bell" label="Notifications" dot to={who.notif} /></div>
         </div>
         <div className="page">{children}</div>
         <nav className="bottom-tabs" aria-label="App">

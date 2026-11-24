@@ -1,0 +1,112 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Motion system. Calm and smooth (220–700 ms), transform and opacity only, so it
+   stays smooth on low-end phones. Everything is switched off for people who turn on
+   "reduce motion" on their device (block at the end of this file).
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  --ease-spring: cubic-bezier(.34, 1.36, .64, 1);   /* small overshoot for pops */
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --stagger: 70ms;
+}
+
+html, .device { scroll-behavior: smooth; }
+
+/* 1. Screen change: the screen fades in, then its sections rise one after another */
+.screen-enter { animation: screen-fade var(--dur) var(--ease-out); }
+@keyframes screen-fade { from { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes rise-sm { from { opacity: 0; transform: translateY(8px) scale(.985); } }
+@keyframes pop { from { opacity: 0; transform: scale(.6); } }
+@keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
+
+.page > *, .auth > .card, .section .wrap > *, .store-head, .gallery, .buy-box, .hero .wrap > * {
+  animation: rise var(--dur-slow) var(--ease-out) backwards;
+}
+.page > :nth-child(2), .section .wrap > :nth-child(2), .hero .wrap > :nth-child(2) { animation-delay: calc(var(--stagger) * 1); }
+.page > :nth-child(3), .section .wrap > :nth-child(3) { animation-delay: calc(var(--stagger) * 2); }
+.page > :nth-child(4), .section .wrap > :nth-child(4) { animation-delay: calc(var(--stagger) * 3); }
+.page > :nth-child(5), .section .wrap > :nth-child(5) { animation-delay: calc(var(--stagger) * 4); }
+.page > :nth-child(n+6), .section .wrap > :nth-child(n+6) { animation-delay: calc(var(--stagger) * 5); }
+
+/* 2. Items in grids and lists appear one by one (first 8; the rest together) */
+.pgrid > *, .g4 > *, .g3 > *, .role-grid > *, .feature-grid > *, .role-pick > *, .list > .list-row, .checklist > li, .rp-list > *, .f-cats > * {
+  animation: rise-sm var(--dur-slow) var(--ease-out) backwards;
+}
+:is(.pgrid, .g4, .g3, .role-grid, .feature-grid, .role-pick, .list, .checklist, .rp-list, .f-cats) > :nth-child(2) { animation-delay: calc(var(--stagger) * 1 + 100ms); }
+:is(.pgrid, .g4, .g3, .role-grid, .feature-grid, .role-pick, .list, .checklist, .rp-list, .f-cats) > :nth-child(3) { animation-delay: calc(var(--stagger) * 2 + 100ms); }
+:is(.pgrid, .g4, .g3, .role-grid, .feature-grid, .role-pick, .list, .checklist, .rp-list, .f-cats) > :nth-child(4) { animation-delay: calc(var(--stagger) * 3 + 100ms); }
+:is(.pgrid, .g4, .g3, .role-grid, .feature-grid, .role-pick, .list, .checklist, .rp-list, .f-cats) > :nth-child(5) { animation-delay: calc(var(--stagger) * 4 + 100ms); }
+:is(.pgrid, .g4, .g3, .role-grid, .feature-grid, .role-pick, .list, .checklist, .rp-list, .f-cats) > :nth-child(6) { animation-delay: calc(var(--stagger) * 5 + 100ms); }
+:is(.pgrid, .g4, .g3, .role-grid, .feature-grid, .role-pick, .list, .checklist, .rp-list, .f-cats) > :nth-child(7) { animation-delay: calc(var(--stagger) * 6 + 100ms); }
+:is(.pgrid, .g4, .g3, .role-grid, .feature-grid, .role-pick, .list, .checklist, .rp-list, .f-cats) > :nth-child(n+8) { animation-delay: calc(var(--stagger) * 7 + 100ms); }
+/* Table rows (desktop) and phone row-cards */
+tbody tr { animation: rise-sm var(--dur) var(--ease-out) backwards; }
+tbody tr:nth-child(2) { animation-delay: 60ms; } tbody tr:nth-child(3) { animation-delay: 130ms; } tbody tr:nth-child(4) { animation-delay: 190ms; } tbody tr:nth-child(n+5) { animation-delay: 260ms; }
+
+/* 3. Colour changes blend instead of snapping */
+.btn, .icon-btn, .chip, .tab, .f-chip, .af-chip, .f-cat, .seg-f button, .side-link, .pub-nav button, .choice, .rp-row, .rp-card, .rm-item, .pi-opt, .mm-link,
+.list-row, .idx-item, .share-opt, .pcard, .role-card, .switch-card, .role-select, .input, .select, .textarea, .input-group, .phone-input, .upload, .state-pills button,
+.bottom-tabs button, .f-sec > summary, .stars button, .linkbox {
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out), transform var(--dur-fast) var(--ease-out), opacity var(--dur) var(--ease-out);
+}
+
+/* Press feedback everywhere it makes sense */
+:is(.btn, .icon-btn, .chip, .f-chip, .af-chip, .tab, .seg-f button, .mm-link, .rm-item, .pi-opt, .rp-row, .f-cat, .stars button, .switch-card, .role-select, .choice):active:not(:disabled) { transform: scale(.97); }
+
+/* Hover (mouse and trackpad only, never stuck on touch screens) */
+@media (hover: hover) {
+  .btn-primary:hover:not(:disabled), .btn-wheat:hover:not(:disabled), .btn-wa:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+  .btn-secondary:hover:not(:disabled), .btn-soft:hover:not(:disabled) { transform: translateY(-1px); }
+  :is(.pcard, .role-card, .rp-card:not(:disabled), .idx-item, .share-opt, .mm-link):hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+  .pcard .ph > img { transition: transform 960ms var(--ease-out); }
+  .pcard:hover .ph > img { transform: scale(1.05); }
+  .list-row:is(button):hover { background: var(--sunken); }
+  .side-link:hover .ic, .bottom-tabs button:hover .ic { transform: translateY(-1px); }
+  .rs-change .ic, .mm-chev, .list-row > .ic:last-child { transition: transform var(--dur) var(--ease-out); }
+  .role-select:hover .rs-change .ic, .mm-link:hover .mm-chev, .list-row:hover > .ic:last-child { transform: translateX(3px); }
+}
+.side-link .ic, .bottom-tabs button .ic { transition: transform var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out); }
+.bottom-tabs button[aria-current="page"] .ic { animation: pop 510ms var(--ease-spring); }
+
+/* 4. Things that open: popups, menus, accordions */
+.pi-pop, .rm-pop { animation: drop var(--dur) var(--ease-out); transform-origin: top; }
+.rm-side .rm-pop { animation-name: rise-sm; transform-origin: bottom; }
+.f-sec[open] > .f-body { animation: drop var(--dur) var(--ease-out); }
+.modal-back { animation: screen-fade var(--dur) var(--ease-out); }
+.modal { animation: modal-in 480ms var(--ease-spring); }
+@keyframes modal-in { from { opacity: 0; transform: translateY(14px) scale(.96); } }
+.toast { animation: toast-in 580ms var(--ease-spring); }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 16px) scale(.95); } }
+.alert, .error-summary { animation: rise-sm var(--dur-slow) var(--ease-out) backwards; }
+.mm-body > .mm-link { animation: menu-item 510ms var(--ease-out) backwards; }
+.mm-body > .mm-link:nth-child(2) { animation-delay: 60ms; } .mm-body > .mm-link:nth-child(3) { animation-delay: 130ms; }
+.mm-body > .mm-link:nth-child(4) { animation-delay: 190ms; } .mm-body > .mm-link:nth-child(5) { animation-delay: 260ms; }
+@keyframes menu-item { from { opacity: 0; transform: translateX(24px); } }
+
+/* Status changes: progress, timeline, checks */
+.steps span { transition: background-color 640ms var(--ease-out); }
+.timeline li.done .node, .checklist li.done .ck { animation: pop 610ms var(--ease-spring) backwards; }
+.timeline li:nth-child(2).done .node { animation-delay: 140ms; } .timeline li:nth-child(3).done .node { animation-delay: 290ms; }
+.timeline li:nth-child(4).done .node { animation-delay: 430ms; } .timeline li:nth-child(5).done .node { animation-delay: 580ms; }
+.timeline li.now .node { animation: now-pulse 1.8s ease-in-out infinite; }
+@keyframes now-pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--harvest-fill) 25%, transparent); } }
+.pickup-code, .code-display { animation: pop 670ms var(--ease-spring) backwards; animation-delay: 190ms; }
+.em-ic, .si-big { animation: pop 670ms var(--ease-spring) backwards; }
+.badge { transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out); }
+.pw-bars span { transition: background-color var(--dur) var(--ease-out); }
+.range::before { transition: background 190ms linear; }
+
+/* 5. Photos fade in once loaded (class set in the Photo component) */
+.ph > img { opacity: 0; transition: opacity 720ms var(--ease-out), transform 960ms var(--ease-out); }
+.ph > img.is-loaded { opacity: 1; }
+.store-cover.has-photo, .hero-photo { animation: screen-fade 960ms var(--ease-out) backwards; }
+
+/* Focus ring glides in */
+:focus-visible { transition: outline-offset var(--dur-fast) var(--ease-out); }
+
+/* Reduce motion: no movement, no stagger, no pulses. Colour still changes instantly. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+  .ph > img { opacity: 1; }
+}

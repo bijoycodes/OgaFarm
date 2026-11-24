@@ -1,6 +1,7 @@
 /* Blocks reused by several screens and versions */
+import { useState, type ReactNode } from 'react';
 import { Icon } from './ui/Icon';
-import { Btn, IconBtn, LinkBox, Chips, Field, Empty, ProductCard, Skel, Clickable, Photo } from './ui/ui';
+import { Btn, IconBtn, LinkBox, Chips, Field, Empty, ProductCard, Skel, Clickable, Photo, Switch } from './ui/ui';
 import { PLANS, PRODUCTS, naira } from './data/sample';
 
 export function Plans({ selectable }: { selectable?: boolean }) {
@@ -58,15 +59,90 @@ export function StockModal() {
   );
 }
 
-function Filters() {
+/* ---------- Marketplace filters (sidebar on desktop, sheet on mobile) ---------- */
+const CATS: [string, string, number][] = [['All produce', 'grid', 8], ['Vegetables', 'leaf', 3], ['Fruits', 'leaf', 1], ['Eggs & poultry', 'egg', 1], ['Fish', 'fish', 1], ['Grains & cereals', 'seed', 1], ['Processed foods', 'sack', 1]];
+const AVAIL = ['Available now', 'Expected soon', 'Recurring', 'Seasonal'];
+const RADIUS = ['10 km', '25 km', '50 km', 'State'];
+
+function FilterSection({ title, children, open = true }: { title: string; children: ReactNode; open?: boolean }) {
   return (
-    <div className="stack">
-      <div className="field"><span>Section</span><Chips items={['All', 'Crops', 'Livestock', 'Bulk goods']} /></div>
-      <Field label="Category"><select className="select"><option>All categories</option><option>Vegetables</option><option>Fruits</option><option>Eggs</option><option>Fish & Aquaculture</option><option>Grains & Cereals</option></select></Field>
-      <Field label="Location"><input className="input" defaultValue="Asaba, Delta State" /></Field>
-      <div className="field"><span>Price per unit</span><div className="row" style={{ flexWrap: 'nowrap' }}><input className="input" placeholder="Min ₦" aria-label="Minimum price" /><input className="input" placeholder="Max ₦" aria-label="Maximum price" /></div></div>
-      <label className="check"><input type="checkbox" defaultChecked />Verified farms only</label>
-      <label className="check"><input type="checkbox" />Stock confirmed in the last 24 hours</label>
+    <details className="f-sec" open={open}>
+      <summary><span>{title}</span><Icon name="chev" /></summary>
+      <div className="f-body">{children}</div>
+    </details>
+  );
+}
+
+function PriceRange() {
+  const MAX = 50000;
+  const [lo, setLo] = useState(300), [hi, setHi] = useState(45000);
+  const pct = (v: number) => `${(v / MAX) * 100}%`;
+  return (
+    <div className="stack" style={{ gap: 12 }}>
+      <div className="range" style={{ ['--lo' as string]: pct(lo), ['--hi' as string]: pct(hi) }}>
+        <input type="range" min={0} max={MAX} step={100} value={lo} aria-label="Minimum price" onChange={e => setLo(Math.min(+e.target.value, hi - 500))} />
+        <input type="range" min={0} max={MAX} step={100} value={hi} aria-label="Maximum price" onChange={e => setHi(Math.max(+e.target.value, lo + 500))} />
+      </div>
+      <div className="price-pair">
+        <label><span className="xs muted">Min</span><span className="pp-in"><span>₦</span><input className="num" inputMode="numeric" value={lo.toLocaleString('en-NG')} onChange={e => setLo(Number(e.target.value.replace(/\D/g, '')) || 0)} aria-label="Minimum price in naira" /></span></label>
+        <span className="pp-sep" aria-hidden="true" />
+        <label><span className="xs muted">Max</span><span className="pp-in"><span>₦</span><input className="num" inputMode="numeric" value={hi.toLocaleString('en-NG')} onChange={e => setHi(Number(e.target.value.replace(/\D/g, '')) || 0)} aria-label="Maximum price in naira" /></span></label>
+      </div>
+    </div>
+  );
+}
+
+function ToggleChips({ items, initial }: { items: string[]; initial: string[] }) {
+  const [on, setOn] = useState<string[]>(initial);
+  return <div className="f-chips">{items.map(c => (
+    <button key={c} type="button" className="f-chip" aria-pressed={on.includes(c)} onClick={() => setOn(v => v.includes(c) ? v.filter(x => x !== c) : [...v, c])}>{on.includes(c) && <Icon name="check" />}{c}</button>
+  ))}</div>;
+}
+
+export function Filters({ sheet }: { sheet?: boolean }) {
+  const [cat, setCat] = useState('All produce');
+  const [radius, setRadius] = useState('50 km');
+  return (
+    <div className={`filters ${sheet ? 'filters-sheet' : ''}`}>
+      <div className="f-head">
+        <h3>Filters <span className="f-count">3</span></h3>
+        {sheet ? <IconBtn icon="close" label="Close filters" close /> : <Clickable className="f-clear" toast="All filters cleared">Clear all</Clickable>}
+      </div>
+      <FilterSection title="Category">
+        <div className="f-cats" role="radiogroup" aria-label="Category">{CATS.map(([name, ic, n]) => (
+          <button key={name} type="button" role="radio" aria-checked={cat === name} className="f-cat" onClick={() => setCat(name)}>
+            <span className="f-ic"><Icon name={ic} /></span><span className="grow">{name}</span><span className="f-n">{n}</span>
+          </button>
+        ))}</div>
+      </FilterSection>
+      <FilterSection title="Location">
+        <div className="input-group"><span><Icon name="pin" /></span><input className="input" defaultValue="Asaba, Delta State" aria-label="Location" /></div>
+        <div className="seg-f" role="radiogroup" aria-label="Distance">{RADIUS.map(r => (
+          <button key={r} type="button" role="radio" aria-checked={radius === r} onClick={() => setRadius(r)}>{r}</button>
+        ))}</div>
+      </FilterSection>
+      <FilterSection title="Price per unit"><PriceRange /></FilterSection>
+      <FilterSection title="Availability"><ToggleChips items={AVAIL} initial={['Available now', 'Recurring']} /></FilterSection>
+      <FilterSection title="How you get it"><ToggleChips items={['Pickup at farm', 'Delivery']} initial={['Pickup at farm', 'Delivery']} /></FilterSection>
+      <FilterSection title="Trust">
+        <div className="stack" style={{ gap: 8 }}>
+          <Switch label="Verified farms only" on onText="Checked by the OgaFarm team" offText="Show all farms" />
+          <Switch label="Fresh stock only" onText="Stock confirmed in the last 24 hours" offText="Any confirmation date" />
+        </div>
+      </FilterSection>
+      {sheet && <div className="f-foot"><Btn variant="secondary" toast="All filters cleared">Clear all</Btn><Btn close toast="Showing 8 results">Show 8 results</Btn></div>}
+    </div>
+  );
+}
+
+/** Active filters above the results: each can be removed, plus "Clear all". */
+function ActiveFilters() {
+  const [items, setItems] = useState(['Asaba · 50 km', 'Verified farms', 'Available now', 'Recurring']);
+  if (!items.length) return null;
+  return (
+    <div className="active-filters" aria-label="Active filters">
+      {items.map(i => <button key={i} type="button" className="af-chip" aria-label={`Remove filter: ${i}`} onClick={() => setItems(v => v.filter(x => x !== i))}>{i}<Icon name="close" /></button>)}
+      <Clickable className="f-clear" onClick={() => setItems([])}>Clear all</Clickable>
     </div>
   );
 }
@@ -81,10 +157,10 @@ export function Browse({ state, productTo = 'product' }: { state: string; produc
     <>
       <div className="row-between">
         <div><h2>Browse produce</h2><p className="small muted">{state === 'default' ? '8 results near Asaba, Delta State' : ' '}</p></div>
-        <div className="row browse-tools"><Btn variant="secondary" size="sm" className="filter-btn" icon="filter" toast="Opens filters">Filters</Btn><select className="select" style={{ width: 'auto', minHeight: 36 }} aria-label="Sort"><option>Nearest first</option><option>Lowest price</option><option>Recently confirmed</option></select></div>
+        <div className="row browse-tools"><Btn variant="secondary" size="sm" className="filter-btn" icon="filter" modal="filters">Filters · 3</Btn><select className="select" style={{ width: 'auto', minHeight: 36 }} aria-label="Sort"><option>Nearest first</option><option>Lowest price</option><option>Recently confirmed</option></select></div>
       </div>
       <div className="input-group"><span><Icon name="search" /></span><input className="input" defaultValue={state === 'empty' ? 'cocoyam' : ''} placeholder="Search produce, livestock, inputs" aria-label="Search" /></div>
-      <div className="browse"><aside className="filter-panel card"><Filters /></aside><div className="stack">{results}</div></div>
+      <div className="browse"><aside className="filter-panel card"><Filters /></aside><div className="stack">{state === 'default' && <ActiveFilters />}{results}</div></div>
     </>
   );
 }

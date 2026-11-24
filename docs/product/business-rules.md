@@ -4,6 +4,21 @@ Part of the [PRD](prd-summary.md). These rules are **binding**: code and tests m
 
 ---
 
+## BR-ACC — Accounts and roles
+
+| ID | Rule |
+|---|---|
+| BR-ACC-01 | One account per verified email. Sign-up creates the account with **exactly one role**. The account can hold more roles later. |
+| BR-ACC-02 | A user adds a role later from the role menu (**Add another role**). Each added role must meet its own activation requirements (roles-and-permissions §1): a buyer role is active at once; a transporter or consultant role needs its own verification; a paid role needs its own plan and verification. Adding a role never charges, changes or extends another role's plan. |
+| BR-ACC-03 | Only one role is active in the app at a time. Switching role changes the dashboard, navigation and actions, without signing out. The app reopens in the last role used. |
+| BR-ACC-04 | Permissions are checked against the **active role** on the server. Data stays with the role that created it (an order placed as a buyer belongs to the buyer role; a listing to the farmer role). |
+| BR-ACC-05 | Notifications are tagged with the role they belong to. The role menu shows an unread count per role, so nothing is missed while using another role. |
+| BR-ACC-06 | The identity check (ID, name match) is done once per account and reused by every role. Role-specific checks (farm, vehicle, business, credentials) still apply to each role. |
+| BR-ACC-07 | A user can pause or remove a role from account settings. At least one role must remain. A removed farmer or supplier role hides its storefront and listings; nothing is deleted, and re-adding the role restores them. |
+| BR-ACC-08 | Admin staff accounts are separate and cannot hold marketplace roles. |
+| BR-ACC-09 | Users sign in with email and password. Passwords: at least 8 characters with letters and numbers, stored only as a secure hash. After repeated wrong passwords, sign-in pauses briefly. *Keep me signed in* keeps a session on that device until the user signs out. Admin staff also need their authenticator code (2-step). |
+| BR-ACC-10 | Forgot password: a 6-digit code is emailed; the user enters it and sets a new password; all other sessions are signed out and the user is told by email. The reply never reveals whether an email is registered. |
+
 ## BR-SUB — Subscriptions and entitlements
 
 | ID | Rule |
@@ -133,7 +148,7 @@ Part of the [PRD](prd-summary.md). These rules are **binding**: code and tests m
 | BR-NOT-03 | Personal data is processed in line with the NDPA 2023. Collect only what is needed. A retention and deletion policy applies. |
 | BR-NOT-04 | AI answers are disclosed as AI, grounded in authorised records, and never perform actions without user confirmation. |
 | BR-NOT-05 | Private documents live in encrypted storage behind signed URLs. They are never public. |
-| BR-NOT-06 | Account verification and sign-in codes are sent by email only (6 digits, short expiry, limited attempts). SMS is never used for verification. |
+| BR-NOT-06 | Codes are sent by email only (6 digits, short expiry, limited attempts): once at sign-up to confirm the email address, and for password reset. They are not used at every sign-in. SMS is never used for verification. |
 
 ## BR-SHR — Sharing and deep links
 

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { countUp } from '@shared/ui/countUp';
 import { ProtoContext, type Proto, type Theme } from './context';
 import { DesignSystem } from './DesignSystem';
 import { VERSIONS } from '../../versions';
 import type { ScreenDef, VersionDef, Role } from '@shared/registry';
-import { ShareSheet, StockModal } from '@shared/blocks';
+import { ShareSheet, StockModal, Filters } from '@shared/blocks';
 import { Icon } from '@shared/ui/Icon';
 
 const ROLE_HOME: Partial<Record<Role, string>> = { visitor: 'landing', farmer: 'farmer-dashboard', buyer: 'buyer-browse', admin: 'admin-login', transporter: 'transporter-dashboard' };
@@ -28,7 +29,8 @@ function screensFor(versionId: string) {
 const MODALS: Record<string, () => ReactNode> = {
   'share-store': () => <ShareSheet what="your storefront" url="/farm/okafor-family-farm" preview="Okafor Family Farm · OgaFarm" />,
   'share-product': () => <ShareSheet what="this product" url="/product/okafor-roma-tomatoes" preview="Fresh tomatoes (Roma) · ₦350/kg" />,
-  'stock': () => <StockModal />
+  'stock': () => <StockModal />,
+  'filters': () => <Filters sheet />
 };
 
 const THEMES: [Theme, string, string][] = [['system', 'monitor', 'Match device'], ['light', 'sun', 'Light'], ['dark', 'moon', 'Dark']];
@@ -90,6 +92,9 @@ export function ProtoApp() {
   const current = screens.get(screenId);
   const stateList = current?.states;
   const curState = stateList ? (states[screenId] && stateList.includes(states[screenId]) ? states[screenId] : stateList[0]) : 'default';
+
+  // Dashboard numbers count up when a screen or state opens
+  useEffect(() => { const d = document.getElementById('device'); return d ? countUp(d) : undefined; }, [screenId, curState, versionId]);
 
   const proto: Proto = {
     go, toast: setToastMsg, openModal: setModal, closeModal: () => setModal(null),

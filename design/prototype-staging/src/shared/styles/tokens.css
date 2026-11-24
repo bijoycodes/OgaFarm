@@ -53,7 +53,7 @@
   --shadow-2: 0 12px 32px -8px rgba(23, 61, 42, .16);
   --shadow-3: 0 24px 48px -12px rgba(23, 61, 42, .22);
   --ease-out: cubic-bezier(.22, .8, .36, 1);
-  --dur-fast: 150ms; --dur: 220ms; --dur-slow: 320ms;
+  --dur-fast: 200ms; --dur: 360ms; --dur-slow: 560ms;
   --icon-sm: 16px; --icon-md: 20px; --icon-lg: 24px;
   --tap: 44px;
   --z-sticky: 10; --z-bar: 20; --z-overlay: 40; --z-toast: 50;

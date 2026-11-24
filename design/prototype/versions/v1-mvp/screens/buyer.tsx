@@ -1,4 +1,5 @@
 /* v1 · Buyer: browse, checkout, order status, orders, account */
+import { PhoneInput } from '@shared/ui/PhoneInput';
 import { Icon } from '@shared/ui/Icon';
 import { Btn, Clickable, Status, Alert, Empty, Photo, Stepper, Field, Kv } from '@shared/ui/ui';
 import { AppShell } from '@shared/layout/shells';
@@ -27,7 +28,7 @@ export function Checkout({ state }: { state: string }) {
           </div>
           <div className="card"><div className="form-grid">
             <Field label="Your name"><input className="input" defaultValue="Ngozi Eze" /></Field>
-            <Field label="Phone"><div className="input-group"><span>+234</span><input className="input" defaultValue="806 555 0142" /></div></Field>
+            <Field label="Phone"><PhoneInput defaultValue="806 555 0142" label="Phone" /></Field>
           </div></div>
         </div>
         <aside className="card stack buy-box"><h3>Summary</h3>
@@ -87,8 +88,8 @@ export function BuyerAccount() {
     <AppShell role="buyer" active="buyer-account" title="Account">
       <h1>Account</h1>
       <div className="card stack"><div className="row" style={{ flexWrap: 'nowrap' }}><span className="avatar" style={{ width: 56, height: 56, flex: 'none' }}>NE</span><div className="grow" style={{ minWidth: 0 }}><h3>Ngozi Eze</h3><div className="small muted">+234 806 555 0142 · Individual buyer</div></div></div></div>
-      <div className="card list" style={{ paddingBlock: 4 }}>{([['user', 'Personal details'], ['pin', 'Saved pickup places'], ['bell', 'Notification settings'], ['lock', 'Privacy and data'], ['store', 'Start selling on OgaFarm']] as const).map(([i, t]) => (
-        <Clickable key={t} className="list-row" toast={`${t} opens`}><Icon name={i} /><span className="grow">{t}</span><Icon name="chev" /></Clickable>
+      <div className="card list" style={{ paddingBlock: 4 }}>{([['users', 'Your roles · add another role', 'add-role'], ['user', 'Personal details', ''], ['pin', 'Saved pickup places', ''], ['bell', 'Notification settings', ''], ['lock', 'Privacy and data', ''], ['store', 'Start selling on OgaFarm', 'add-role']] as const).map(([i, t, to]) => (
+        <Clickable key={t} className="list-row" to={to || undefined} toast={to ? undefined : `${t} opens`}><Icon name={i} /><span className="grow">{t}</span><Icon name="chev" /></Clickable>
       ))}</div>
     </AppShell>
   );
