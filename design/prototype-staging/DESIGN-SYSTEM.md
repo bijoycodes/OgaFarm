@@ -4,6 +4,8 @@ Made with the **UI/UX Pro Max** skill (`.claude/skills/ui-ux-pro-max`). Query us
 `"agriculture farm marketplace organic fresh produce" --design-system --variance 4 --motion 3 --density 5`.
 Every version of the prototype (`versions/v1-mvp`, `v2-…`) follows these rules. Tokens live in `src/shared/styles/tokens.css`.
 
+> **Mobile app:** the app prototype (`design/app-prototype-staging`, Expo) uses the same colours, fonts, radius and motion — see `src/theme/tokens.ts` there. Change a token in both places.
+
 ## Direction
 | | Skill recommendation | What we use | Why |
 |---|---|---|---|

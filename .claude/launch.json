@@ -22,6 +22,34 @@
         "dev"
       ],
       "port": 5174
+    },
+    {
+      "name": "app-prototype-staging-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "design/app-prototype-staging",
+        "run",
+        "web",
+        "--",
+        "--port",
+        "8082"
+      ],
+      "port": 8082
+    },
+    {
+      "name": "app-prototype-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "design/app-prototype",
+        "run",
+        "web",
+        "--",
+        "--port",
+        "8083"
+      ],
+      "port": 8083
     }
   ]
 }
