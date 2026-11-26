@@ -4,10 +4,18 @@ import { Btn, IconBtn, Clickable, Badge, ThemeToggle } from '../ui/ui';
 import { useProto } from '@app/context';
 import { RoleMenu } from './RoleMenu';
 
-const ICON_SRC = './icon.png';
+/* OgaFarm logo (docs/reference/images/ogafarm_logo.png) cut into emblem + lettering so it fits a bar;
+   the lettering has a lighter night-mode version, picked by CSS (.ln-light / .ln-dark). */
+const LogoArt = () => (
+  <>
+    <img className="lm" src="./logo-mark.png" alt="" />
+    <img className="ln ln-light" src="./logo-name.png" alt="OgaFarm" />
+    <img className="ln ln-dark" src="./logo-name-dark.png" alt="OgaFarm" />
+  </>
+);
 
 export const Logo = ({ to = 'landing' }: { to?: string }) =>
-  <Clickable className="logo" to={to}><img src={ICON_SRC} alt="" />OgaFarm</Clickable>;
+  <Clickable className="logo" to={to} aria-label="OgaFarm home"><LogoArt /></Clickable>;
 
 /* ---------------- public pages ---------------- */
 const PUB_NAV: [string, string][] = [['marketplace', 'Browse produce'], ['soon:v3', 'Suppliers'], ['soon:v5', 'Jobs'], ['soon:v5', 'Markets'], ['pricing', 'Pricing']];
@@ -70,7 +78,7 @@ function MobileMenu({ active }: { active?: string }) {
       {open && (
         <div className="mm-panel" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu" style={h ? { height: h } : undefined}>
           <div className="mm-head">
-            <span className="logo"><img src={ICON_SRC} alt="" />OgaFarm</span>
+            <span className="logo"><LogoArt /></span>
             <button type="button" className="icon-btn mm-close" aria-label="Close menu" onClick={close}><Icon name="close" /></button>
           </div>
           <nav className="mm-body" aria-label="Main">
@@ -100,7 +108,7 @@ function MobileMenu({ active }: { active?: string }) {
 function Footer() {
   return (
     <footer className="pub-footer">
-      <div className="stack"><div className="logo"><img src={ICON_SRC} alt="" />OgaFarm</div><p className="small" style={{ maxWidth: '32ch' }}>Your farm. Your market. Buy fresh produce, livestock and farm inputs directly from Nigerian farmers.</p></div>
+      <div className="stack"><div className="logo-full"><img className="ln-light" src="./logo.png" alt="OgaFarm. Your Farm. Your Market." /><img className="ln-dark" src="./logo-dark.png" alt="OgaFarm. Your Farm. Your Market." /></div><p className="small" style={{ maxWidth: '32ch' }}>Your farm. Your market. Buy fresh produce, livestock and farm inputs directly from Nigerian farmers.</p></div>
       <div><h4>Buy</h4><a>Browse produce</a><a>Rescue produce</a><a>Group buying</a><a>Business buying</a></div>
       <div><h4>Sell</h4><a>Start selling</a><a>Pricing</a><a>Farm suppliers</a><a>Transporters</a></div>
       <div><h4>Help</h4><a>Support</a><a>Privacy</a><a>Terms</a><a>Local markets</a></div>
@@ -177,7 +185,7 @@ export function AppShell({ role, active, title, back, actions, children }:
       </aside>
       <div className="main">
         <div className={`topbar ${role !== 'admin' && !back ? 'has-role' : ''}`}>
-          {back ? <IconBtn icon="back" label="Back" to={back} /> : <img className="mobile-logo" src={ICON_SRC} alt="OgaFarm" />}
+          {back ? <IconBtn icon="back" label="Back" to={back} /> : <img className="mobile-logo" src="./logo-mark.png" alt="OgaFarm" />}
           <div className="title">{title}</div>
           <div className="acts">{actions}{role !== 'admin' && <span className="show-m"><RoleMenu role={role} variant="top" /></span>}<ThemeToggle /><IconBtn icon="bell" label="Notifications" dot to={who.notif} /></div>
         </div>

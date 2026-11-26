@@ -1,7 +1,17 @@
 /* ---------- public shell ---------- */
 .pub-header { display: flex; align-items: center; gap: var(--s-4); padding: 12px var(--s-5); background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: var(--z-sticky); }
 .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; color: var(--ink); text-decoration: none; cursor: pointer; background: none; border: 0; padding: 0; min-height: var(--tap); }
-.logo img { width: 36px; height: 36px; border-radius: 8px; }
+.logo img { display: block; width: auto; }
+.logo .lm { height: 40px; }
+.logo .ln { height: 24px; }
+.ln-dark { display: none !important; }
+:root[data-theme="dark"] .ln-light { display: none !important; }
+:root[data-theme="dark"] .ln-dark { display: block !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ln-light { display: none !important; }
+  :root:not([data-theme="light"]) .ln-dark { display: block !important; }
+}
+.logo-full img { display: block; width: 132px; height: auto; }
 .pub-nav { display: flex; gap: 2px; margin-left: var(--s-4); }
 .pub-nav button { background: none; border: 0; padding: 8px 14px; border-radius: var(--r-ctl); font-weight: 700; color: var(--ink-2); cursor: pointer; min-height: 40px; transition: background var(--dur-fast); }
 .pub-nav button:hover { background: var(--sunken); color: var(--ink); }
@@ -179,7 +189,8 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
   .page { padding-top: var(--s-5); }
   .pub-header { padding: 8px var(--s-3, 12px); gap: var(--s-2, 8px); }
   .pub-header .logo { gap: 8px; font-size: 1.125rem; flex-shrink: 0; }
-  .pub-header .logo img { width: 32px; height: 32px; }
+  .pub-header .logo .lm { height: 34px; }
+  .pub-header .logo .ln { height: 20px; }
   .pub-actions { gap: 4px; }
   .pub-actions .btn { padding: 0 14px; }
   .pub-nav, .hide-m { display: none !important; }
@@ -195,7 +206,7 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
   .sidebar { display: none; }
   .bottom-tabs { display: flex; }
   .topbar { padding: 8px var(--s-4); min-height: 60px; }
-  .topbar .mobile-logo { display: block; width: 32px; height: 32px; border-radius: 6px; }
+  .topbar .mobile-logo { display: block; width: auto; height: 34px; }
   .browse { grid-template-columns: 1fr; }
   .filter-panel { display: none; }
   .filter-btn { display: inline-flex !important; }
@@ -296,6 +307,7 @@ label.plan input { position: absolute; top: 20px; right: 20px; width: 22px; heig
   .app { grid-template-columns: 88px minmax(0, 1fr); }
   .sidebar { padding: var(--s-3) 8px; align-items: stretch; }
   .sidebar .logo { font-size: 0; gap: 0; justify-content: center; padding: 4px 0 14px; }
+  :root .sidebar .logo .ln { display: none !important; }
   .sidebar .eyebrow { display: none; }
   .side-link { position: relative; flex-direction: column; justify-content: center; gap: 4px; padding: 10px 4px; font-size: 11px; line-height: 1.2; text-align: center; min-height: 64px; }
   .side-link .ic { width: 22px; height: 22px; }
