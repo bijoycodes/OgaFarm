@@ -13,8 +13,10 @@ import { Icon } from '@/ui/Icon';
 import { Alert, Button, Card, Field, Input, Kv, Press, Rise, Row, Status, T, Timeline } from '@/ui/kit';
 import { Choice, Route, Who } from '@/ui/market';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 const ID = '/transporter/job';
+const DELIVERY_CONDITIONS = ['Matches the order', 'Small difference', 'Damaged'];
 
 function PhotoTile({ done, onPress, label }: { done: boolean; onPress: () => void; label: string }) {
   const { c } = useTheme();
@@ -68,8 +70,8 @@ export default function Job() {
             <T v="h3">At the farm: confirm pickup</T>
             <T v="small" muted>Count the load with the farmer before you leave.</T>
             <Field label="Quantity loaded"><Input value={loaded} onChangeText={setLoaded} /></Field>
-            <Choice on={goodAtPickup} onPress={() => setGoodAtPickup(true)} title="Good, matches the order" />
-            <Choice on={!goodAtPickup} onPress={() => setGoodAtPickup(false)} title="Some damage" sub="Describe it to the farmer and add a photo" />
+            <Field label="Condition at pickup"><Select label="Condition at pickup" options={[{ value: 'Good, matches the order' }, { value: 'Some damage', sub: 'Describe it to the farmer and add a photo' }]}
+              value={goodAtPickup ? 'Good, matches the order' : 'Some damage'} onChange={v => setGoodAtPickup(v === 'Good, matches the order')} /></Field>
             <PhotoTile done={photo1} onPress={() => { setPhoto1(true); haptic.tap(); }} label="Photo of the load (helps later)" />
           </>}
           {step === 1 && <>
@@ -85,10 +87,7 @@ export default function Job() {
               <TextInput value={code} onChangeText={t => setCode(t.replace(/\D/g, '').slice(0, 4))} keyboardType="number-pad" maxLength={4} placeholder="• • • •" placeholderTextColor={c.muted} accessibilityLabel="Buyer's delivery code"
                 style={{ minHeight: 60, borderWidth: 1.5, borderRadius: radius.md, borderColor: wrong ? c.danger : code.length === 4 ? c.primary : c.lineStrong, backgroundColor: c.card, textAlign: 'center', letterSpacing: 12, fontFamily: fonts.bodyHeavy, fontSize: size.x2, color: c.ink }} />
             </Field>
-            <View style={{ gap: 8 }}>
-              <T v="label">Condition</T>
-              {['Matches the order', 'Small difference', 'Damaged'].map((t, i) => <Choice key={t} on={cond === i} onPress={() => setCond(i)} title={t} />)}
-            </View>
+            <Field label="Condition"><Select label="Condition" options={DELIVERY_CONDITIONS} value={DELIVERY_CONDITIONS[cond]} onChange={v => setCond(DELIVERY_CONDITIONS.indexOf(v))} /></Field>
             <PhotoTile done={photo2} onPress={() => { setPhoto2(true); haptic.tap(); }} label="Photo at drop-off (optional)" />
           </>}
           {step === 3 && <>

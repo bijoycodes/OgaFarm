@@ -11,6 +11,7 @@ import { radius } from '@/theme/tokens';
 import { Icon, type IconName } from '@/ui/Icon';
 import { Alert, Badge, Button, Card, Checklist, Chip, Field, Input, Press, Rise, Row, T } from '@/ui/kit';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 const IDS = ['National ID (NIN slip)', "Driver's licence", 'International passport', "Voter's card"];
 
@@ -77,7 +78,7 @@ function Verification() {
         <Card>
           <T v="h3">Your farm</T>
           <Field label="Farm name" required><Input value={farm} onChangeText={setFarm} /></Field>
-          <Field label="Farm type"><Row gap={8} wrap>{FARM_TYPES.map(t => <Chip key={t} label={t} on={type === t} onPress={() => setType(t)} />)}</Row></Field>
+          <Field label="Farm type"><Select label="Farm type" options={FARM_TYPES} value={type} onChange={setType} /></Field>
           <Row gap={10} style={{ alignItems: 'flex-start' }}>
             <View style={{ flex: 1 }}><Field label="State"><Input value="Delta" editable={false} /></Field></View>
             <View style={{ flex: 1.4 }}><Field label="LGA"><Input value={lga} onChangeText={setLga} /></Field></View>
@@ -88,7 +89,7 @@ function Verification() {
       <Rise i={4}>
         <Card>
           <T v="h3">Your ID</T>
-          <Field label="ID document"><Row gap={8} wrap>{IDS.map(t => <Chip key={t} label={t} on={idType === t} onPress={() => setIdType(t)} />)}</Row></Field>
+          <Field label="ID document"><Select label="ID document" options={IDS} value={idType} onChange={setIdType} /></Field>
           <Field label="Name on ID" hint="Must match your account name."><Input value={acct.name} editable={false} /></Field>
           <Upload icon="camera" title="Photo of your ID" note="Take a photo or choose a file · up to 5 MB" done={id} onPress={() => { haptic.tap(); setId(true); toast('ID photo added'); }} />
           <Upload icon="image" title="Photo of your farm" note="A clear photo of your farm or produce" done={photo} onPress={() => { haptic.tap(); setPhoto(true); toast('Farm photo added'); }} />

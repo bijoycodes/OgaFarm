@@ -1,29 +1,27 @@
-/* Pickers that open as native sheets (iOS page sheet; Android slides up):
+/* Pickers that open in the shared bottom sheet (same look and motion as every dropdown):
    phone number with country picker, and the sign-up role picker. Same content as the web prototype. */
 import { useMemo, useState, type ReactNode } from 'react';
-import { FlatList, Modal, Platform, Text, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FlatList, Text, TextInput, View } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import { fonts, radius, size, space } from '@/theme/tokens';
 import { haptic } from '@/proto/haptics';
 import { ROLE_CATALOG, roleDef, type RoleKey } from '@/data/roles';
+import { BottomSheet } from './bottom-sheet';
 import { Icon } from './Icon';
 import { Badge, IconButton, Press, T } from './kit';
 
-/** Sheet shell: title row with close button, safe-area aware. */
+/** Sheet with a title, optional subtitle and close button — the same bottom sheet the dropdowns use. */
 export function Sheet({ visible, onClose, title, subtitle, children }: { visible: boolean; onClose: () => void; title: string; subtitle?: string; children: ReactNode }) {
-  const { c } = useTheme();
-  const insets = useSafeAreaInsets();
   return (
-    <Modal visible={visible} onRequestClose={onClose} animationType="slide" presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}>
-      <View style={{ flex: 1, backgroundColor: c.bg, paddingTop: Platform.OS === 'ios' ? 0 : insets.top, paddingBottom: insets.bottom }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: space[4], borderBottomWidth: 1, borderBottomColor: c.line, backgroundColor: c.card }}>
-          <View style={{ flex: 1 }}><T v="h2">{title}</T>{subtitle && <T v="small" muted>{subtitle}</T>}</View>
+    <BottomSheet visible={visible} onClose={onClose}
+      header={
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: space[4], paddingTop: space[2], paddingBottom: space[3] }}>
+          <View style={{ flex: 1 }}><T v="h3">{title}</T>{subtitle && <T v="xs" muted>{subtitle}</T>}</View>
           <IconButton icon="close" label="Close" onPress={onClose} />
         </View>
-        {children}
-      </View>
-    </Modal>
+      }>
+      {children}
+    </BottomSheet>
   );
 }
 
@@ -73,10 +71,10 @@ export function PhoneInput({ value, onChangeText }: { value: string; onChangeTex
           style={{ flex: 1, paddingHorizontal: 14, fontFamily: fonts.body, fontSize: size.md, color: c.ink }} />
       </View>
       <Sheet visible={open} onClose={() => setOpen(false)} title="Country code" subtitle="Nigeria is the default. Buyers abroad can pick their country.">
-        <View style={{ padding: space[4], paddingBottom: space[2] }}>
+        <View style={{ paddingHorizontal: space[4], paddingBottom: space[2] }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1, borderColor: c.lineStrong, borderRadius: radius.md, paddingHorizontal: 12, backgroundColor: c.card }}>
             <Icon name="search" size={18} color={c.muted} />
-            <TextInput value={q} onChangeText={setQ} placeholder="Search country or code" placeholderTextColor={c.muted} autoFocus
+            <TextInput value={q} onChangeText={setQ} placeholder="Search country or code" placeholderTextColor={c.muted} accessibilityLabel="Search country or code"
               style={{ flex: 1, minHeight: 46, fontFamily: fonts.body, fontSize: size.md, color: c.ink }} />
           </View>
         </View>
@@ -115,7 +113,7 @@ export function RolePicker({ value, onChange, version = 2 }: { value: RoleKey; o
         <Text style={{ fontFamily: fonts.bodyHeavy, fontSize: size.sm, color: c.primaryInk }}>Change</Text>
       </Press>
       <Sheet visible={open} onClose={() => setOpen(false)} title="How will you use OgaFarm?" subtitle="Choose one. You can add more roles later.">
-        <FlatList data={ROLE_CATALOG} keyExtractor={r => r.key} contentContainerStyle={{ padding: space[4], gap: 8 }}
+        <FlatList data={ROLE_CATALOG} keyExtractor={r => r.key} contentContainerStyle={{ paddingHorizontal: space[4], paddingBottom: space[2], gap: 8 }}
           renderItem={({ item: r }) => {
             const soon = r.since > version, on = r.key === value;
             return (

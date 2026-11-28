@@ -6,6 +6,7 @@ import { haptic } from '@/proto/haptics';
 import { Alert, Button, Card, Field, Rise, Row, T, Timeline } from '@/ui/kit';
 import { Choice, Rating, TextArea } from '@/ui/market';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 const WHY = ['Abusive or insulting', 'False information', 'Shares private information', 'Discriminatory', 'No real order behind it', 'Posted by a competitor'];
 
@@ -40,9 +41,8 @@ export default function ReviewAppeal() {
         <Rise i={2}><Alert tone="ok" icon="check" title="Request received · case RV-118">We will email you after the first check. You can add more information at any time.</Alert></Rise>
         <Rise i={3}><Card><T v="h3">Progress</T><Timeline steps={steps} done={1} /></Card></Rise>
       </> : <>
-        <Rise i={2} style={{ gap: 10 }}>
-          <T v="h3">Why should we check it?</T>
-          {WHY.map((w, i) => <Choice key={w} on={why === i} onPress={() => setWhy(i)} title={w} />)}
+        <Rise i={2}>
+          <Field label="Why should we check it?" required><Select label="Reason" options={WHY} value={WHY[why]} onChange={v => setWhy(WHY.indexOf(v))} /></Field>
         </Rise>
         <Rise i={3}>
           <Card>

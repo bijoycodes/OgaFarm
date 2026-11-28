@@ -12,6 +12,7 @@ import { Icon, type IconName } from '@/ui/Icon';
 import { Alert, Badge, Button, Card, Checklist, Chip, Empty, Field, Input, Press, Rise, Row, Steps, T } from '@/ui/kit';
 import { PhoneInput } from '@/ui/pickers';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 function Doc({ icon, title, note, done, onPress }: { icon: IconName; title: string; note: string; done: boolean; onPress: () => void }) {
   const { c } = useTheme();
@@ -86,13 +87,13 @@ function TransporterSignup() {
       <Rise i={3}>
         <Card>
           <T v="h3">Vehicle</T>
-          <Field label="Vehicle type" required><Row gap={8} wrap>{VEHICLES.map(([v, icon]) => <Chip key={v} label={v} icon={icon} on={veh === v} onPress={() => setVeh(v)} />)}</Row></Field>
+          <Field label="Vehicle type" required><Select label="Vehicle type" options={VEHICLES.map(([v, icon]) => ({ value: v, icon }))} value={veh} onChange={setVeh} /></Field>
           {motor && <Field label="Plate number" required hint="Required for motor vehicles."><Input value={plate} onChangeText={t => setPlate(t.toUpperCase())} autoCapitalize="characters" placeholder="e.g. AGB 482 KT" /></Field>}
           <Row gap={10} style={{ alignItems: 'flex-start' }}>
             <View style={{ flex: 1 }}><Field label="Max load (kg)" required><Input value={load} onChangeText={t => setLoad(t.replace(/\D/g, ''))} keyboardType="number-pad" /></Field></View>
             <View style={{ flex: 1 }}><Field label="50 kg bags that fit"><Input value={bags} onChangeText={t => setBags(t.replace(/\D/g, ''))} keyboardType="number-pad" /></Field></View>
           </Row>
-          <Field label="Areas you cover" hint="More areas bring more requests."><Row gap={8} wrap>{AREAS.map(a => <Chip key={a} label={a} on={areas.includes(a)} onPress={() => setAreas(v => v.includes(a) ? v.filter(x => x !== a) : [...v, a])} />)}</Row></Field>
+          <Field label="Areas you cover" hint="More areas bring more requests."><Select multiple label="Areas you cover" options={AREAS} value={areas} onChange={setAreas} placeholder="Choose your areas" /></Field>
         </Card>
       </Rise>
 

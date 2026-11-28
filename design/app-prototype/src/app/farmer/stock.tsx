@@ -12,6 +12,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { space } from '@/theme/tokens';
 import { Alert, Button, Chip, Field, IconButton, Row, T } from '@/ui/kit';
 import { Photo, Stepper } from '@/ui/market';
+import { Select } from '@/ui/select';
 
 export default function Stock() {
   const { c } = useTheme();
@@ -36,7 +37,7 @@ export default function Stock() {
         </Row>
         {p.stale && <Alert tone="warn" icon="clock">Buyers see when stock was last confirmed. Fresh confirmations get more orders.</Alert>}
         <Field label={`How much do you have today? (${unit})`}><Stepper value={qty} onChange={setQty} min={0} step={step} unit={unit} label="Quantity available" /></Field>
-        <Field label="Availability"><Row gap={8} wrap>{AVAILABILITY.map(a => <Chip key={a} label={a} on={avail === a} onPress={() => setAvail(a)} />)}<Chip label="Sold out" on={avail === 'Sold out'} onPress={() => setAvail('Sold out')} /></Row></Field>
+        <Field label="Availability"><Select label="Availability" options={[...AVAILABILITY, 'Sold out']} value={avail} onChange={setAvail} /></Field>
       </ScrollView>
       <View style={{ paddingHorizontal: space[4], paddingTop: space[3], paddingBottom: Math.max(insets.bottom, space[3]), borderTopWidth: 1, borderTopColor: c.line, backgroundColor: c.card }}>
         <Button title="Confirm stock is correct" icon="check" onPress={() => { haptic.success(); if (p.stale) setScreenState('farmer:stock', 'confirmed'); router.back(); toast(`${p.name} confirmed · ${qty} ${unit}`); }} />

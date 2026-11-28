@@ -12,6 +12,7 @@ import { Icon } from '@/ui/Icon';
 import { Alert, Button, Card, Field, Input, Press, Rise, Row, T } from '@/ui/kit';
 import { Choice, CodeCard, TextArea } from '@/ui/market';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 const ID = '/buyer/receive';
 const CONDITIONS = ['Matches the order', 'Small difference', 'Damaged or spoiled', 'Wrong product'];
@@ -63,9 +64,8 @@ export default function Receive() {
         </Card>
       </Rise>
 
-      <Rise i={2} style={{ gap: 10 }}>
-        <T v="h3">Condition</T>
-        {CONDITIONS.map((t, i) => <Choice key={t} on={cond === i} onPress={() => setCond(i)} title={t} />)}
+      <Rise i={2}>
+        <Field label="Condition"><Select label="Condition" options={CONDITIONS} value={CONDITIONS[cond]} onChange={v => setCond(CONDITIONS.indexOf(v))} /></Field>
       </Rise>
 
       <Rise i={3}>

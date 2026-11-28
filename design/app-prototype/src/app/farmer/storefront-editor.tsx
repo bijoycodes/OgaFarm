@@ -13,6 +13,7 @@ import { Icon } from '@/ui/Icon';
 import { Button, Card, Chip, Field, Input, Rise, Row, T } from '@/ui/kit';
 import { Photo, TextArea } from '@/ui/market';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 const TEMPLATES: Record<string, string[]> = {
   'Mixed farm': STORE_TABS,
@@ -80,7 +81,7 @@ export default function StorefrontEditor() {
       <Rise i={2}>
         <Card>
           <View style={{ gap: 2 }}><T v="h3">Storefront tabs</T><T v="small" muted>Up to five tabs. Products stay unlimited.</T></View>
-          <Field label="Start from a template"><Row gap={8} wrap>{FARM_TYPES.map(t => <Chip key={t} label={t} on={template === t} onPress={() => { setTemplate(t); setTabs(TEMPLATES[t]); }} />)}</Row></Field>
+          <Field label="Start from a template" hint="Fills the five tabs below; you can rename them."><Select label="Template" options={FARM_TYPES} value={template} onChange={t => { setTemplate(t); setTabs(TEMPLATES[t]); }} /></Field>
           {tabs.map((t, i) => (
             <Field key={i} label={`Tab ${i + 1}`}><Input value={t} onChangeText={v => setTabs(ts => ts.map((x, j) => j === i ? v : x))} /></Field>
           ))}

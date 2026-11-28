@@ -13,6 +13,7 @@ import { Alert, Button, Card, Chip, Field, Input, Kv, Rise, Row, T } from '@/ui/
 import { Choice, Photo, Stepper } from '@/ui/market';
 import { PhoneInput } from '@/ui/pickers';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 const ID = '/buyer/checkout';
 
@@ -89,7 +90,7 @@ export default function Checkout() {
             <Field label="Recipient phone" required hint="Shared with the transporter after you accept a quote."><PhoneInput value={phone} onChangeText={setPhone} /></Field>
             <Field label="Address" required><Input value={address} onChangeText={setAddress} autoComplete="street-address" textContentType="fullStreetAddress" /></Field>
             <Field label="Landmark" hint="Helps the driver find you."><Input value={landmark} onChangeText={setLandmark} /></Field>
-            <Field label="Deliver by"><Row gap={8} wrap>{['Today, before 4 pm', 'Tomorrow', 'Flexible'].map(w => <Chip key={w} label={w} on={when === w} onPress={() => setWhen(w)} />)}</Row></Field>
+            <Field label="Deliver by"><Select label="Deliver by" options={['Today, before 4 pm', 'Tomorrow', 'Flexible']} value={when} onChange={setWhen} /></Field>
           </> : <>
             <T v="h3">Your details</T>
             <Field label="Your name"><Input value={name} onChangeText={setName} autoComplete="name" textContentType="name" /></Field>

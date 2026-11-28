@@ -1,0 +1,15 @@
+{
+  "name": "ogafarm-figma-export",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Captures every OgaFarm app screen (day and night, every demo state) and builds SVG boards to drop into Figma.",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "boards": "node boards.mjs",
+    "all": "node capture.mjs && node boards.mjs"
+  },
+  "dependencies": {
+    "puppeteer": "^24.43.1"
+  }
+}

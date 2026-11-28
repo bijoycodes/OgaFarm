@@ -13,6 +13,7 @@ import { Icon } from '@/ui/Icon';
 import { Button, Card, Chip, Field, Input, Press, Rise, Row, T } from '@/ui/kit';
 import { Photo, TextArea } from '@/ui/market';
 import { Screen } from '@/ui/screen';
+import { Select } from '@/ui/select';
 
 const CATEGORIES = ['Vegetables', 'Fruits', 'Grains & cereals', 'Tubers & roots', 'Eggs & poultry', 'Fish', 'Processed foods'];
 
@@ -46,9 +47,6 @@ export default function ProductForm() {
     if (invalid) { haptic.warn(); toast('Fill in the marked fields'); return; }
     haptic.success(); toast(edit ? 'Changes saved' : 'Product published'); nav.replace('/farmer/listings');
   };
-  const chips = (items: string[], value: string, set: (v: string) => void) => (
-    <Row gap={8} wrap>{items.map(i => <Chip key={i} label={i} on={value === i} onPress={() => set(i)} />)}</Row>
-  );
 
   return (
     <Screen keyboard footer={<Row gap={10}>
@@ -82,15 +80,15 @@ export default function ProductForm() {
           <Field label="Product name" required error={tried && missing.name ? 'Enter a product name.' : undefined}>
             <Input value={name} onChangeText={setName} placeholder="e.g. Fresh tomatoes (Roma)" invalid={tried && missing.name} />
           </Field>
-          <Field label="Category">{chips(CATEGORIES, cat, setCat)}</Field>
-          <Field label="Storefront tab">{chips(STORE_TABS, tab, setTab)}</Field>
+          <Field label="Category"><Select label="Category" options={CATEGORIES} value={cat} onChange={setCat} /></Field>
+          <Field label="Storefront tab" hint="Which tab of your storefront it shows under."><Select label="Storefront tab" options={STORE_TABS} value={tab} onChange={setTab} /></Field>
         </Card>
       </Rise>
 
       <Rise i={3}>
         <Card>
           <T v="h3">Price and quantity</T>
-          <Field label="Sell by">{chips(UNITS, unit, setUnit)}</Field>
+          <Field label="Sell by"><Select label="Sell by" options={UNITS} value={unit} onChange={setUnit} /></Field>
           <Row gap={10} style={{ alignItems: 'flex-start' }}>
             <View style={{ flex: 1 }}><Field label={`Price per ${unit}`} required error={tried && missing.price ? 'Enter a price.' : undefined}>
               <Input value={price} onChangeText={t => setPrice(t.replace(/\D/g, ''))} keyboardType="number-pad" placeholder="₦" invalid={tried && missing.price} />
@@ -106,7 +104,7 @@ export default function ProductForm() {
       <Rise i={4}>
         <Card>
           <T v="h3">Availability</T>
-          <Row gap={8} wrap>{AVAILABILITY.map(a => <Chip key={a} label={a} on={avail === a} onPress={() => setAvail(a)} />)}</Row>
+          <Field label="Status"><Select label="Availability" options={AVAILABILITY} value={avail} onChange={setAvail} /></Field>
           <Row gap={10}>
             <View style={{ flex: 1 }}><Field label="From"><Input value={from} onChangeText={setFrom} /></Field></View>
             <View style={{ flex: 1 }}><Field label="Until"><Input value={until} onChangeText={setUntil} /></Field></View>
